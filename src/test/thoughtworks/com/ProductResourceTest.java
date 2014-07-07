@@ -18,6 +18,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +79,7 @@ public class ProductResourceTest extends JerseyTest {
     }
 
     @Test
-    public void should_create_product() {
+    public void should_create_product() throws ParseException {
         when(mockProductRepository.createProduct(anyObject(), anyObject())).thenReturn(2);
         Map<String, Object> product = new HashMap<>();
         product.put("name", "productName");
@@ -97,5 +99,6 @@ public class ProductResourceTest extends JerseyTest {
         assertThat(productArgumentCaptor.getValue().getDescription(), is("description"));
 
         assertThat(priceArgumentCaptor.getValue().getAmount(), is(1.0));
+        assertThat(priceArgumentCaptor.getValue().getEffectDate(), is(new SimpleDateFormat("yyyy-MM-dd").parse("2014-01-01")));
     }
 }

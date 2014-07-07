@@ -11,6 +11,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 @Path("/products")
@@ -36,7 +39,15 @@ public class ProductResource {
         Map price = (Map) request.get("price");
         double amount = Double.valueOf(price.get("amount").toString());
 
-        int productId = productRepository.createProduct(new Product(productName, description), new Price(amount));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date effectDate;
+        try {
+            effectDate = formatter.parse(price.get("effectDate").toString());
+        } catch (ParseException e) {
+            return Response.status(400).build();
+        }
+
+        int productId = productRepository.createProduct(new Product(productName, description), new Price(amount, effectDate));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
 
