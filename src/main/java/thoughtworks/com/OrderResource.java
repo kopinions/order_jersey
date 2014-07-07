@@ -32,7 +32,9 @@ public class OrderResource {
     @POST
     public Response createOrder(@Context UriInfo uriInfo, Map order) {
         String address = order.get("address").toString();
-        int orderId = userRepository.createOrderForUser(user, new Order(address));
+        String name = order.get("name").toString();
+        String phone = order.get("phone").toString();
+        int orderId = userRepository.createOrderForUser(user, new Order(address, name, phone));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();
     }
 }

@@ -95,5 +95,7 @@ public class OrderResourceTest extends JerseyTest {
         assertThat(userArgumentCaptor.getValue().getName(), is("kayla"));
 
         assertThat(orderArgumentCaptor.getValue().getAddress(), is("beijing"));
+        assertThat(orderArgumentCaptor.getValue().getName(), is("kayla"));
+        assertThat(orderArgumentCaptor.getValue().getPhone(), is("13212344321"));
     }
 }
