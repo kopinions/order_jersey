@@ -29,9 +29,9 @@ public class PricesResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PriceJson getPrice(@PathParam("id") int id) {
+    public PriceJson getPrice(@PathParam("id") int id, @Context UriInfo uriInfo) {
         Price price = productRepository.getProductPriceById(product, id);
-        return new PriceJson(price);
+        return new PriceJson(price, uriInfo);
     }
 
     @POST

@@ -70,6 +70,7 @@ public class PriceResourceTest extends JerseyTest {
         Map price = response.readEntity(Map.class);
         assertThat(price.get("amount"), is(100.0));
         assertThat(price.get("effectDate"), is(dateFormat.parse("2014-01-01").toString()));
+        assertThat(price.get("uri").toString(), endsWith("/products/2/prices/1"));
     }
 
 
