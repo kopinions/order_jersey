@@ -5,6 +5,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import thoughtworks.com.domain.Product;
@@ -12,13 +14,18 @@ import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,6 +33,10 @@ public class ProductResourceTest extends JerseyTest {
 
     @Mock
     ProductRepository mockProductRepository;
+
+    @Captor
+    ArgumentCaptor<Product> productArgumentCaptor;
+
     @Override
     protected Application configure() {
         ResourceConfig resourceConfig = new ResourceConfig();
@@ -61,14 +72,16 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_create_product() {
-        when(mockProductRepository.createProduct()).thenReturn(2);
-        Form form = new Form();
-        MultivaluedMap<String, String> product = form.asMap();
-        product.add("name", "productName");
-        product.add("description", "description");
-        Response response = target("/products").request().post(Entity.form(form));
+        when(mockProductRepository.createProduct(anyObject())).thenReturn(2);
+        Map<String, Object> product = new HashMap<>();
+        product.put("name", "productName");
+        product.put("description", "description");
+        Response response = target("/products").request().post(Entity.entity(product, MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.getStatus(), is(201));
 
         assertThat(response.getLocation().toString(), endsWith("/products/2"));
+        verify(mockProductRepository).createProduct(productArgumentCaptor.capture());
+        assertThat(productArgumentCaptor.getValue().getName(), is("productName"));
+        assertThat(productArgumentCaptor.getValue().getDescription(), is("description"));
     }
 }

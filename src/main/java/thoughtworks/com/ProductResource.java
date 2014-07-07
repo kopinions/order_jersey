@@ -10,6 +10,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 @Path("/products")
 public class ProductResource {
@@ -26,8 +30,12 @@ public class ProductResource {
     }
 
     @POST
-    public Response createProduct(@Context UriInfo uriInfo) {
-        int productId = productRepository.createProduct();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createProduct(@Context UriInfo uriInfo, Map<String, Object> request) {
+        String productName = request.get("name").toString();
+        String description = request.get("description").toString();
+        
+        int productId = productRepository.createProduct(new Product(productName, description));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
 

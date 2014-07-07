@@ -11,6 +11,11 @@ public class Product {
         this.name = productName;
     }
 
+    public Product(String productName, String description) {
+        name = productName;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
