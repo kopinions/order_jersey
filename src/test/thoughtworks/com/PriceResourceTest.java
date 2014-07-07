@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 import thoughtworks.com.exception.PriceNotFound;
 import thoughtworks.com.exception.ProductNotFound;
@@ -16,10 +17,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -68,10 +69,12 @@ public class PriceResourceTest extends JerseyTest {
 
     @Test
     public void should_create_product_price() {
+        when(productRepository.createProductPrice(any(Product.class), any(Price.class))).thenReturn(2);
         HashMap<Object, Object> price = new HashMap<>();
         price.put("amount", 1);
         price.put("effectDate", "2014-01-01");
         Response response = target("/products/1/prices").request().post(Entity.entity(price, MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.getStatus(), is(201));
+        assertThat(response.getLocation().toString(), endsWith("/products/1/prices/2"));
     }
 }
