@@ -11,11 +11,9 @@ import thoughtworks.com.domain.Product;
 import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.*;
 import java.util.Map;
-
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -59,5 +57,15 @@ public class ProductResourceTest extends JerseyTest {
         when(mockProductRepository.getProductById(eq(999))).thenThrow(ProductNotFound.class);
         Response response = target("/products/999").request().get();
         assertThat(response.getStatus(), is(404));
+    }
+
+    @Test
+    public void should_create_product() {
+        Form form = new Form();
+        MultivaluedMap<String, String> product = form.asMap();
+        product.add("name", "productName");
+        product.add("description", "description");
+        Response response = target("/products").request().post(Entity.form(form));
+        assertThat(response.getStatus(), is(201));
     }
 }
