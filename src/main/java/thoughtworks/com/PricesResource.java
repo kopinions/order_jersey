@@ -2,6 +2,7 @@ package thoughtworks.com;
 
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
+import thoughtworks.com.json.PriceJson;
 import thoughtworks.com.repository.ProductRepository;
 
 import javax.ws.rs.*;
@@ -27,9 +28,10 @@ public class PricesResource {
 
     @GET
     @Path("{id}")
-    public double getPrice(@PathParam("id") int id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public PriceJson getPrice(@PathParam("id") int id) {
         Price price = productRepository.getProductPriceById(product, id);
-        return 0;
+        return new PriceJson(price);
     }
 
     @POST

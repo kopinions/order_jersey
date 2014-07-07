@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -59,9 +60,16 @@ public class PriceResourceTest extends JerseyTest {
 
 
     @Test
-    public void should_get_200(){
+    public void should_get_200() throws ParseException {
+        when(productRepository.getProductById(eq(2))).thenReturn(new Product("name", "description"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        when(productRepository.getProductPriceById(any(Product.class), eq(1))).thenReturn(new Price(100, dateFormat.parse("2014-01-01")));
         Response response = target("/products/2/prices/1").request().get();
         assertThat(response.getStatus(), is(200));
+
+        Map price = response.readEntity(Map.class);
+        assertThat(price.get("amount"), is(100.0));
+        assertThat(price.get("effectDate"), is(dateFormat.parse("2014-01-01").toString()));
     }
 
 
