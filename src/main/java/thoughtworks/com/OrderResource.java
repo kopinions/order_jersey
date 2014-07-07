@@ -8,7 +8,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 public class OrderResource {
     private User user;
@@ -27,7 +29,8 @@ public class OrderResource {
     }
 
     @POST
-    public Response createOrder() {
-        return Response.status(201).build();
+    public Response createOrder(@Context UriInfo uriInfo) {
+        int orderId = userRepository.createOrderForUser(user, new Order());
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();
     }
 }
