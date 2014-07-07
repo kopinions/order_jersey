@@ -54,6 +54,6 @@ public class ProductResource {
     @Path("{productId}/prices")
     public PricesResource getProductPrice(@PathParam("productId") int id) {
         Product product = productRepository.getProductById(id);
-        return new PricesResource();
+        return new PricesResource(product, productRepository);
     }
 }

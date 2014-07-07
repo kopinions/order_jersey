@@ -7,4 +7,6 @@ public interface ProductRepository {
     Product getProductById(int productId);
 
     int createProduct(Product product, Price price);
+
+    Price getProductPriceById(Product product, int priceId);
 }

@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import thoughtworks.com.domain.Product;
+import thoughtworks.com.exception.PriceNotFound;
 import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +51,13 @@ public class PriceResourceTest extends JerseyTest {
     @Test
     public void should_return_404_when_not_found_product() {
         when(productRepository.getProductById(eq(2))).thenThrow(ProductNotFound.class);
+        Response response = target("/products/2/prices/1").request().get();
+        assertThat(response.getStatus(), is(404));
+    }
+
+    @Test
+    public void should_return_404_when_not_found_price() {
+        when(productRepository.getProductPriceById(any(Product.class), eq(1))).thenThrow(PriceNotFound.class);
         Response response = target("/products/2/prices/1").request().get();
         assertThat(response.getStatus(), is(404));
     }
