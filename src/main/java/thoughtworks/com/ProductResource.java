@@ -23,9 +23,9 @@ public class ProductResource {
     ProductRepository productRepository;
 
     @GET
-    @Path("{id}")
+    @Path("{productId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProductJson getProduct(@PathParam("id") int id, @Context UriInfo uriInfo) {
+    public ProductJson getProduct(@PathParam("productId") int id, @Context UriInfo uriInfo) {
         Product product = productRepository.getProductById(id);
         return new ProductJson(product, uriInfo);
     }
@@ -51,4 +51,8 @@ public class ProductResource {
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
 
+    @Path("{productId}/prices")
+    public PricesResource getProductPrice(@PathParam("productId") int id) {
+        return new PricesResource();
+    }
 }
