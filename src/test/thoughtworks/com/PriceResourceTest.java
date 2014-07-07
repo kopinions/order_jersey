@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
 import javax.ws.rs.core.Application;
@@ -14,6 +15,8 @@ import javax.ws.rs.core.Response;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PriceResourceTest extends JerseyTest {
@@ -39,5 +42,13 @@ public class PriceResourceTest extends JerseyTest {
     public void should_get_200(){
         Response response = target("/products/2/prices/1").request().get();
         assertThat(response.getStatus(), is(200));
+    }
+
+
+    @Test
+    public void should_return_404_when_not_found_product() {
+        when(productRepository.getProductById(eq(2))).thenThrow(ProductNotFound.class);
+        Response response = target("/products/2/prices/1").request().get();
+        assertThat(response.getStatus(), is(404));
     }
 }
