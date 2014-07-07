@@ -1,5 +1,6 @@
 package thoughtworks.com;
 
+import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 import thoughtworks.com.json.ProductJson;
 import thoughtworks.com.repository.ProductRepository;
@@ -10,9 +11,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 @Path("/products")
@@ -34,8 +32,11 @@ public class ProductResource {
     public Response createProduct(@Context UriInfo uriInfo, Map<String, Object> request) {
         String productName = request.get("name").toString();
         String description = request.get("description").toString();
-        
-        int productId = productRepository.createProduct(new Product(productName, description));
+
+        Map price = (Map) request.get("price");
+        double amount = Double.valueOf(price.get("amount").toString());
+
+        int productId = productRepository.createProduct(new Product(productName, description), new Price(amount));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
 

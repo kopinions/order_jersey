@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
@@ -36,6 +37,11 @@ public class ProductResourceTest extends JerseyTest {
 
     @Captor
     ArgumentCaptor<Product> productArgumentCaptor;
+
+
+    @Captor
+    ArgumentCaptor<Price> priceArgumentCaptor;
+
 
     @Override
     protected Application configure() {
@@ -72,16 +78,24 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_create_product() {
-        when(mockProductRepository.createProduct(anyObject())).thenReturn(2);
+        when(mockProductRepository.createProduct(anyObject(), anyObject())).thenReturn(2);
         Map<String, Object> product = new HashMap<>();
         product.put("name", "productName");
         product.put("description", "description");
+
+        Map<String, Object> price = new HashMap<>();
+        price.put("amount", 1.0);
+        price.put("effectDate", "2014-01-01");
+        product.put("price", price);
+
         Response response = target("/products").request().post(Entity.entity(product, MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.getStatus(), is(201));
 
         assertThat(response.getLocation().toString(), endsWith("/products/2"));
-        verify(mockProductRepository).createProduct(productArgumentCaptor.capture());
+        verify(mockProductRepository).createProduct(productArgumentCaptor.capture(), priceArgumentCaptor.capture());
         assertThat(productArgumentCaptor.getValue().getName(), is("productName"));
         assertThat(productArgumentCaptor.getValue().getDescription(), is("description"));
+
+        assertThat(priceArgumentCaptor.getValue().getAmount(), is(1.0));
     }
 }
