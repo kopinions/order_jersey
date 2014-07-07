@@ -9,6 +9,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 public class PricesResource {
 
@@ -30,8 +34,17 @@ public class PricesResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createProductPrice(@Context UriInfo uriInfo) {
-        int priceId = productRepository.createProductPrice(product, new Price());
+    public Response createProductPrice(@Context UriInfo uriInfo, Map price) {
+        double amount = Double.valueOf(price.get("amount").toString());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date effectDate;
+
+        try {
+            effectDate = format.parse(price.get("effectDate").toString());
+        } catch (ParseException e) {
+            return Response.status(400).build();
+        }
+        int priceId = productRepository.createProductPrice(product, new Price(amount, effectDate));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(priceId)).build()).build();
     }
 }
