@@ -27,7 +27,7 @@ public class ProductJson {
     }
 
     public PriceRefJson getPrice() {
-        return new PriceRefJson(product.getCurrentPrice());
+        return new PriceRefJson(product.getCurrentPrice(), getUri());
     }
 
 }

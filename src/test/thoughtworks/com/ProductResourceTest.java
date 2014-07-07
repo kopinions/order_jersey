@@ -61,19 +61,20 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get() {
-        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product(2, "name", "description", new Price(100, new Date())));
-        Response response = target("/products/1").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
+        when(mockProductRepository.getProductById(eq(2))).thenReturn(new Product(2, "name", "description", new Price(1, 100, new Date())));
+        Response response = target("/products/2").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         assertThat(response.getStatus(), is(200));
 
         Map product = response.readEntity(Map.class);
 
         assertThat(product.get("name"), is("name"));
         assertThat(product.get("description"), is("description"));
-        assertThat(product.get("uri").toString(), endsWith("/products/1"));
+        assertThat(product.get("uri").toString(), endsWith("/products/2"));
 
         Map price = (Map) product.get("price");
         assertThat(price.get("amount"), is(100.0));
         assertThat(price.containsKey("effectDate"), is(true));
+        assertThat(price.get("uri").toString(), endsWith("/products/2/prices/1"));
     }
 
     @Test
