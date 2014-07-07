@@ -12,7 +12,9 @@ import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -39,9 +41,12 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get() {
-        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product());
-        Response response = target("/products/1").request().get();
+        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product("name"));
+        Response response = target("/products/1").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         assertThat(response.getStatus(), is(200));
+
+        Map product = response.readEntity(Map.class);
+        assertThat(product.get("name"), is("name"));
     }
 
     @Test
