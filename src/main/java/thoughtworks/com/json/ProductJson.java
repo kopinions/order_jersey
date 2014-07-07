@@ -26,4 +26,8 @@ public class ProductJson {
         return uriInfo.getAbsolutePathBuilder().build();
     }
 
+    public PriceRefJson getPrice() {
+        return new PriceRefJson(product.getCurrentPrice());
+    }
+
 }

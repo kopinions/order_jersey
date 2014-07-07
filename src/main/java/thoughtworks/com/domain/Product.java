@@ -4,6 +4,7 @@ public class Product {
     private int productId;
     private String description;
     private String name;
+    private Price currentPrice;
 
     public Product(int productId, String productName, String description) {
         this.productId = productId;
@@ -16,6 +17,13 @@ public class Product {
         this.description = description;
     }
 
+    public Product(int productId, String name, String description, Price currentPrice) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.currentPrice = currentPrice;
+    }
+
     public String getName() {
         return name;
     }
@@ -24,4 +32,7 @@ public class Product {
         return description;
     }
 
+    public Price getCurrentPrice() {
+        return currentPrice;
+    }
 }

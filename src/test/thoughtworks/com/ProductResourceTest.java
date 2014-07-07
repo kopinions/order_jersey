@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get() {
-        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product(2, "name", "description"));
+        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product(2, "name", "description", new Price(100, new Date())));
         Response response = target("/products/1").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         assertThat(response.getStatus(), is(200));
 
@@ -69,6 +70,10 @@ public class ProductResourceTest extends JerseyTest {
         assertThat(product.get("name"), is("name"));
         assertThat(product.get("description"), is("description"));
         assertThat(product.get("uri").toString(), endsWith("/products/1"));
+
+        Map price = (Map) product.get("price");
+        assertThat(price.get("amount"), is(100.0));
+        assertThat(price.containsKey("effectDate"), is(true));
     }
 
     @Test
