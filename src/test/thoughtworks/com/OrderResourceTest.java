@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import thoughtworks.com.exception.OrderNotFound;
 import thoughtworks.com.exception.UserNotFound;
 import thoughtworks.com.repository.UserRepository;
 
@@ -44,6 +45,15 @@ public class OrderResourceTest extends JerseyTest {
     @Test
     public void should_return_404_when_not_find_user() {
         when(mockUserRepository.getUserById(eq(2))).thenThrow(UserNotFound.class);
+        Response response = target("/users/2/orders/1").request().get();
+
+        assertThat(response.getStatus(), is(404));
+    }
+
+
+    @Test
+    public void should_return_404_when_user_order_not_found() {
+        when(mockUserRepository.getUserOrderById(eq(1))).thenThrow(OrderNotFound.class);
         Response response = target("/users/2/orders/1").request().get();
 
         assertThat(response.getStatus(), is(404));
