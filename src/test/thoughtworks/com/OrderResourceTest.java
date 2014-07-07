@@ -27,6 +27,7 @@ import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,6 +37,9 @@ public class OrderResourceTest extends JerseyTest {
 
     @Captor
     ArgumentCaptor<User> userArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Order> orderArgumentCaptor;
 
     @Override
     protected Application configure() {
@@ -75,6 +79,7 @@ public class OrderResourceTest extends JerseyTest {
 
     @Test
     public void should_create_order_for_user() {
+        when(mockUserRepository.getUserById(eq(1))).thenReturn(new User(1, "kayla"));
         when(mockUserRepository.createOrderForUser(any(User.class), any(Order.class))).thenReturn(2);
 
         Map order = new HashMap<>();
@@ -85,5 +90,10 @@ public class OrderResourceTest extends JerseyTest {
         Response response = target("/users/1/orders").request().post(Entity.entity(order, MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.getStatus(), is(201));
         assertThat(response.getLocation().toString(), endsWith("/users/1/orders/2"));
+
+        verify(mockUserRepository).createOrderForUser(userArgumentCaptor.capture(), orderArgumentCaptor.capture());
+        assertThat(userArgumentCaptor.getValue().getName(), is("kayla"));
+
+        assertThat(orderArgumentCaptor.getValue().getAddress(), is("beijing"));
     }
 }
