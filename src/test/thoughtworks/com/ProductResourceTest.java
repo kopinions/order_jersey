@@ -41,7 +41,7 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get() {
-        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product("name", "description"));
+        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product(2, "name", "description"));
         Response response = target("/products/1").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         assertThat(response.getStatus(), is(200));
 
@@ -61,11 +61,14 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_create_product() {
+        when(mockProductRepository.createProduct()).thenReturn(2);
         Form form = new Form();
         MultivaluedMap<String, String> product = form.asMap();
         product.add("name", "productName");
         product.add("description", "description");
         Response response = target("/products").request().post(Entity.form(form));
         assertThat(response.getStatus(), is(201));
+
+        assertThat(response.getLocation().toString(), endsWith("/products/2"));
     }
 }

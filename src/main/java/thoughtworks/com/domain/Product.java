@@ -1,12 +1,12 @@
 package thoughtworks.com.domain;
 
-import java.net.URI;
-
 public class Product {
+    private int productId;
     private String description;
     private String name;
 
-    public Product(String productName, String description) {
+    public Product(int productId, String productName, String description) {
+        this.productId = productId;
         this.description = description;
         this.name = productName;
     }

@@ -26,7 +26,9 @@ public class ProductResource {
     }
 
     @POST
-    public Response createProduct() {
-        return Response.status(201).build();
+    public Response createProduct(@Context UriInfo uriInfo) {
+        int productId = productRepository.createProduct();
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
+
 }
