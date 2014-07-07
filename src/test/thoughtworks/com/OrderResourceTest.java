@@ -11,8 +11,12 @@ import thoughtworks.com.exception.OrderNotFound;
 import thoughtworks.com.exception.UserNotFound;
 import thoughtworks.com.repository.UserRepository;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -57,5 +61,16 @@ public class OrderResourceTest extends JerseyTest {
         Response response = target("/users/2/orders/1").request().get();
 
         assertThat(response.getStatus(), is(404));
+    }
+
+    @Test
+    public void should_create_order_for_user() {
+        Map order = new HashMap<>();
+        order.put("address", "beijing");
+        order.put("name", "kayla");
+        order.put("phone", "13212344321");
+
+        Response response = target("/users/1/orders").request().post(Entity.entity(order, MediaType.APPLICATION_JSON_TYPE));
+        assertThat(response.getStatus(), is(201));
     }
 }
