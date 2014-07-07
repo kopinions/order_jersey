@@ -12,8 +12,12 @@ import thoughtworks.com.exception.PriceNotFound;
 import thoughtworks.com.exception.ProductNotFound;
 import thoughtworks.com.repository.ProductRepository;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -60,5 +64,14 @@ public class PriceResourceTest extends JerseyTest {
         when(productRepository.getProductPriceById(any(Product.class), eq(1))).thenThrow(PriceNotFound.class);
         Response response = target("/products/2/prices/1").request().get();
         assertThat(response.getStatus(), is(404));
+    }
+
+    @Test
+    public void should_create_product_price() {
+        HashMap<Object, Object> price = new HashMap<>();
+        price.put("amount", 1);
+        price.put("effectDate", "2014-01-01");
+        Response response = target("/products/1/prices").request().post(Entity.entity(price, MediaType.APPLICATION_JSON_TYPE));
+        assertThat(response.getStatus(), is(201));
     }
 }
