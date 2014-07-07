@@ -16,7 +16,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -41,12 +43,15 @@ public class ProductResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get() {
-        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product("name"));
+        when(mockProductRepository.getProductById(eq(1))).thenReturn(new Product("name", "description"));
         Response response = target("/products/1").request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         assertThat(response.getStatus(), is(200));
 
         Map product = response.readEntity(Map.class);
+
         assertThat(product.get("name"), is("name"));
+        assertThat(product.get("description"), is("description"));
+        assertThat(product.get("uri").toString(), endsWith("/products/1"));
     }
 
     @Test
