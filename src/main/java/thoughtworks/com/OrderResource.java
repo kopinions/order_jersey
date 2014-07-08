@@ -29,7 +29,7 @@ public class OrderResource {
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     public OrderJson getOrder(@PathParam("orderId") int orderId, @Context UriInfo uriInfo) {
-        Order order = userRepository.getUserOrderById(orderId);
+        Order order = userRepository.getUserOrderById(user, orderId);
         return new OrderJson(order, uriInfo);
     }
 
@@ -50,7 +50,7 @@ public class OrderResource {
 
     @Path("{orderId}/payment")
     public PaymentResource payment(@PathParam("orderId") int orderId) {
-        Order order = userRepository.getUserOrderById(orderId);
+        Order order = userRepository.getUserOrderById(user, orderId);
         return new PaymentResource(user, order, userRepository);
     }
 }

@@ -7,11 +7,12 @@ import thoughtworks.com.domain.User;
 public interface UserRepository {
     public User getUserById(int eq);
 
-    Order getUserOrderById(int eq);
+    Order getUserOrderById(User user, int orderId);
 
     int createOrderForUser(User user, Order order);
 
     Payment getUserOrderPayment(User user, Order order);
 
     int createPaymentForUserOrder(User user, Order order, Payment payment);
+
 }

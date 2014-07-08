@@ -76,7 +76,7 @@ public class PaymentResourceTest extends JerseyTest {
     @Test
     public void should_create_payment_for_user_order() {
         when(userRepository.getUserById(eq(1))).thenReturn(new User(1, "kayla"));
-        when(userRepository.getUserOrderById(eq(2))).thenReturn(new Order(2, "beijing", "sofia", "", asList()));
+        when(userRepository.getUserOrderById(any(User.class), eq(2))).thenReturn(new Order(2, "beijing", "sofia", "", asList()));
         Map payment = new HashMap<>();
         payment.put("type", "CASH");
         payment.put("amount", 100);

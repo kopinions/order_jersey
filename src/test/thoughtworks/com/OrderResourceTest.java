@@ -60,7 +60,7 @@ public class OrderResourceTest extends JerseyTest {
 
     @Test
     public void should_get_order() {
-        when(mockUserRepository.getUserOrderById(eq(1))).thenReturn(new Order(1,"beijing", "kayla", "13212344321", asList()));
+        when(mockUserRepository.getUserOrderById(any(User.class), eq(1))).thenReturn(new Order(1,"beijing", "kayla", "13212344321", asList()));
         Response response = target("/users/1/orders/1").request().get();
         assertThat(response.getStatus(), is(200));
 
@@ -83,7 +83,7 @@ public class OrderResourceTest extends JerseyTest {
 
     @Test
     public void should_return_404_when_user_order_not_found() {
-        when(mockUserRepository.getUserOrderById(eq(1))).thenThrow(OrderNotFound.class);
+        when(mockUserRepository.getUserOrderById(any(User.class), eq(1))).thenThrow(OrderNotFound.class);
         Response response = target("/users/2/orders/1").request().get();
 
         assertThat(response.getStatus(), is(404));
