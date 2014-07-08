@@ -4,8 +4,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import thoughtworks.com.domain.Order;
 import thoughtworks.com.domain.User;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -33,5 +35,17 @@ public class UserRepositoryTest {
         User userGot = userRepository.getUserById(kayla.getId());
 
         assertThat(userGot.getName(), is("kayla"));
+    }
+
+    @Test
+    public void should_create_order_for_user_then_get_order() {
+        UserRepository userRepository = sqlSession.getMapper(UserRepository.class);
+        User kayla = new User("kayla");
+        userRepository.createUser(kayla);
+
+        Order orderForKayla = new Order("beijing", "name", "13200000000", asList());
+        userRepository.createOrderForUser(kayla, orderForKayla);
+
+        assertThat(orderForKayla.getId()>0, is(true));
     }
 }

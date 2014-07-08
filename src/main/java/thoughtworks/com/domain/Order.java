@@ -40,4 +40,8 @@ public class Order {
     public List getOrderItems() {
         return orderItems;
     }
+
+    public int getId() {
+        return id;
+    }
 }

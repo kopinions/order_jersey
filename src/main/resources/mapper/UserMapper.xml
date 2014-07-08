@@ -13,4 +13,11 @@
     <select id="getUserById" resultType="thoughtworks.com.domain.User">
       select id, name from users where id = #{userId};
     </select>
+
+    <insert id="createOrderForUser" parameterType="thoughtworks.com.domain.Order">
+        <selectKey keyProperty="order.id" resultType="Integer" order="BEFORE">
+            select NEXTVAL('orders_id_seq');
+        </selectKey>
+        insert into orders (id, name, phone, address, userId) values (#{order.id}, #{order.name}, #{order.phone}, #{order.address}, #{user.id});
+    </insert>
 </mapper>
