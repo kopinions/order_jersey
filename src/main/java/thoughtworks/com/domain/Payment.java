@@ -1,20 +1,28 @@
 package thoughtworks.com.domain;
 
 public class Payment {
-    private String type;
+    private String payType;
     private double amount;
+    private int id;
+
+    public Payment() {
+    }
 
     public Payment(String payType, double amount) {
-        type = payType;
+        this.payType = payType;
         this.amount = amount;
     }
 
 
-    public String getType() {
-        return type;
+    public String getPayType() {
+        return payType;
     }
 
     public double getAmount() {
         return amount;
+    }
+
+    public int getId() {
+        return id;
     }
 }

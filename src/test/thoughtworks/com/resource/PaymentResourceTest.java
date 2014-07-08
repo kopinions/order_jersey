@@ -61,7 +61,7 @@ public class PaymentResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get_payment() {
-        when(userRepository.getUserOrderPayment(any(User.class), any(Order.class))).thenReturn(new Payment("CASH", 100));
+        when(userRepository.getOrderPayment(any(Order.class))).thenReturn(new Payment("CASH", 100));
         Response response = target("/users/1/orders/2/payment").request().get();
 
         assertThat(response.getStatus(), is(200));
@@ -75,7 +75,7 @@ public class PaymentResourceTest extends JerseyTest {
 
     @Test
     public void should_return_404_when_not_found_payment() {
-        when(userRepository.getUserOrderPayment(any(User.class), any(Order.class))).thenThrow(PaymentNotFound.class);
+        when(userRepository.getOrderPayment(any(Order.class))).thenThrow(PaymentNotFound.class);
         Response response = target("/users/1/orders/2/payment").request().get();
 
         assertThat(response.getStatus(), is(404));
@@ -98,7 +98,7 @@ public class PaymentResourceTest extends JerseyTest {
 
         assertThat(orderArgumentCaptor.getValue().getName(), is("sofia"));
 
-        assertThat(paymentArgumentCaptor.getValue().getType(), is("CASH"));
+        assertThat(paymentArgumentCaptor.getValue().getPayType(), is("CASH"));
         assertThat(paymentArgumentCaptor.getValue().getAmount(), is(100.0));
     }
 }

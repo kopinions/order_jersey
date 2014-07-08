@@ -61,4 +61,20 @@ public class UserRepositoryTest {
         assertThat(orderForKaylaGot.getOrderItems().size(), is(1));
         assertThat(orderForKaylaGot.getOrderItems().get(0).getQuantity(), is(2));
     }
+
+
+    @Test
+    public void should_create_payment_and_get_payment(){
+        UserRepository userRepository = sqlSession.getMapper(UserRepository.class);
+        User sofia = new User("sofia");
+        userRepository.createUser(sofia);
+        Order orderForKayla = new Order("beijing", "kayla", "13200000000", asList());
+        userRepository.createOrderForUser(sofia, orderForKayla);
+        Payment paymentOfOrderForKayla = new Payment("CASH", 100);
+        int effectRow = userRepository.createPaymentForUserOrder(sofia, orderForKayla, paymentOfOrderForKayla);
+        assertThat(effectRow>0, is(true));
+
+        Payment payment = userRepository.getOrderPayment(orderForKayla);
+        assertThat(payment.getAmount(), is(100.0));
+    }
 }

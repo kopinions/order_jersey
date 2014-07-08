@@ -46,4 +46,17 @@
         from orders t_order
         left join order_items oitems on oitems.orderId = t_order.id;
     </select>
+
+
+    <insert id="createPaymentForUserOrder" parameterType="thoughtworks.com.domain.Payment">
+      insert into payments (payType, amount, orderId) values (#{payment.payType}, #{payment.amount}, #{order.id});
+    </insert>
+
+    <select id="getOrderPayment" resultType="thoughtworks.com.domain.Payment">
+        select
+          amount,
+          payType
+        from payments
+        where orderId = #{order.id};
+    </select>
 </mapper>

@@ -32,7 +32,7 @@ public class PaymentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PaymentJson getPayment(@Context UriInfo uriInfo) {
-        Payment payment = userRepository.getUserOrderPayment(user, order);
+        Payment payment = userRepository.getOrderPayment(order);
         return new PaymentJson(uriInfo, payment);
     }
 

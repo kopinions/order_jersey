@@ -24,6 +24,6 @@ public class PaymentJson {
     }
 
     public String getType() {
-        return payment.getType();
+        return payment.getPayType();
     }
 }
