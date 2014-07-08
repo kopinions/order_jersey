@@ -49,4 +49,24 @@ public class ProductRepositoryTest {
         assertThat(product.getDescription(), is("red apple"));
         assertThat(product.getCurrentPrice().getAmount(), is(100.0));
     }
+
+    @Test
+    public void should_get_product_price_by_id() throws IOException, ParseException {
+        InputStream resourceAsStream = Resources.getResourceAsStream("mybatis.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);
+        ProductRepository productRepository = sqlSessionFactory.openSession().getMapper(ProductRepository.class);
+        Product apple = new Product("apple", "red apple");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int effectRow = productRepository.createProduct(apple, new Price(10, dateFormat.parse("2014-01-01")));
+
+        Price price = new Price(100, new Date());
+        productRepository.createProductPrice(apple, price);
+
+        assertThat(price.getId() > 0, is(true));
+
+        System.out.println(price.getId());
+        Price priceGetted = productRepository.getProductPriceById(apple, price.getId());
+
+        assertThat(priceGetted.getAmount(), is(100.0));
+    }
 }

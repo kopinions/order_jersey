@@ -39,8 +39,17 @@
 
     <insert id="createProductPrice" parameterType="thoughtworks.com.domain.Price">
         <selectKey keyProperty="price.id" resultType="Integer" order="BEFORE">
-            select NEXTVAL('products_id_seq');
+            select NEXTVAL('prices_id_seq');
         </selectKey>
-        insert into prices (amount, effectDate, productId) values (#{price.amount}, #{price.effectDate}, #{product.id});
+        insert into prices (id, amount, effectDate, productId) values (#{price.id}, #{price.amount}, #{price.effectDate}, #{product.id});
     </insert>
+
+
+    <select id="getProductPriceById" resultType="thoughtworks.com.domain.Price">
+        select
+        id,
+        amount,
+        effectDate
+        from prices where id = #{priceId} and productId = #{product.id};
+    </select>
 </mapper>
