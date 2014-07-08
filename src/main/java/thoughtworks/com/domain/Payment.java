@@ -9,6 +9,7 @@ public class Payment {
         this.amount = amount;
     }
 
+
     public String getType() {
         return type;
     }

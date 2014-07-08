@@ -61,12 +61,16 @@ public class PaymentResourceTest extends JerseyTest {
 
     @Test
     public void should_return_200_when_get_payment() {
+        when(userRepository.getUserOrderPayment(any(User.class), any(Order.class))).thenReturn(new Payment("CASH", 100));
         Response response = target("/users/1/orders/2/payment").request().get();
 
         assertThat(response.getStatus(), is(200));
 
         Map payment = response.readEntity(Map.class);
         assertThat(payment.get("uri").toString(), endsWith("/users/1/orders/2/payment"));
+
+        assertThat(payment.get("amount"), is(100.0));
+        assertThat(payment.get("type"), is("CASH"));
     }
 
     @Test
