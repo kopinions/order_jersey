@@ -43,9 +43,14 @@ public class UserRepositoryTest {
         User kayla = new User("kayla");
         userRepository.createUser(kayla);
 
-        Order orderForKayla = new Order("beijing", "name", "13200000000", asList());
+        Order orderForKayla = new Order("beijing", "orderForSofia", "13200000000", asList());
         userRepository.createOrderForUser(kayla, orderForKayla);
 
         assertThat(orderForKayla.getId()>0, is(true));
+
+        Order orderForKaylaGot = userRepository.getUserOrderById(kayla, orderForKayla.getId());
+        assertThat(orderForKaylaGot.getName(), is("orderForSofia"));
+        assertThat(orderForKaylaGot.getAddress(), is("beijing"));
+        assertThat(orderForKaylaGot.getPhone(), is("13200000000"));
     }
 }

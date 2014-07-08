@@ -20,4 +20,13 @@
         </selectKey>
         insert into orders (id, name, phone, address, userId) values (#{order.id}, #{order.name}, #{order.phone}, #{order.address}, #{user.id});
     </insert>
+
+    <select id="getUserOrderById" resultType="thoughtworks.com.domain.Order">
+        select
+        id,
+        name,
+        address,
+        phone
+        from orders where id = #{orderId} and userId = #{user.id};
+    </select>
 </mapper>

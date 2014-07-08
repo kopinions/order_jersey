@@ -9,6 +9,9 @@ public class Order {
     private String phone;
     private List orderItems;
 
+    public Order() {
+    }
+
     public Order(String address, String name, String phone, List orderItems) {
         this.address = address;
         this.name = name;

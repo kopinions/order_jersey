@@ -10,7 +10,7 @@ public interface UserRepository {
 
     int createUser(@Param("user") User user);
 
-    Order getUserOrderById(User user, int orderId);
+    Order getUserOrderById(@Param("user") User user, @Param("orderId") int orderId);
 
     int createOrderForUser(@Param("user") User user, @Param("order") Order order);
 
