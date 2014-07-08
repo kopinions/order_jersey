@@ -7,7 +7,7 @@ public class Order {
     private String address;
     private String name;
     private String phone;
-    private List orderItems;
+    private List<OrderItem> orderItems;
 
     public Order() {
     }
@@ -40,7 +40,7 @@ public class Order {
         return phone;
     }
 
-    public List getOrderItems() {
+    public List<OrderItem> getOrderItems() {
         return orderItems;
     }
 

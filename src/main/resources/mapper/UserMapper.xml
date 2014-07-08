@@ -18,15 +18,32 @@
         <selectKey keyProperty="order.id" resultType="Integer" order="BEFORE">
             select NEXTVAL('orders_id_seq');
         </selectKey>
-        insert into orders (id, name, phone, address, userId) values (#{order.id}, #{order.name}, #{order.phone}, #{order.address}, #{user.id});
+        insert into orders (id, name, phone, address, userId) values (#{order.id}, #{order.name}, #{order.phone},
+        #{order.address}, #{user.id});
+        <foreach collection="order.orderItems" item="orderItem">
+            insert into order_items(orderId, productId, quantity) values (#{order.id}, #{orderItem.productId}, #{orderItem.quantity});
+        </foreach>
     </insert>
 
-    <select id="getUserOrderById" resultType="thoughtworks.com.domain.Order">
+    <resultMap id="orderMap" type="thoughtworks.com.domain.Order">
+        <id property="id" column="order_id"/>
+        <result property="name" column="order_name"></result>
+        <result property="address" column="order_address"></result>
+        <result property="phone" column="order_phone"></result>
+        <collection ofType="thoughtworks.com.domain.OrderItem" property="orderItems">
+            <result property="productId" column="item_productId"></result>
+            <result property="quantity" column="item_quantity"></result>
+        </collection>
+    </resultMap>
+    <select id="getUserOrderById" resultMap="orderMap">
         select
-        id,
-        name,
-        address,
-        phone
-        from orders where id = #{orderId} and userId = #{user.id};
+            t_order.id as order_id,
+            t_order.name as order_name,
+            t_order.address as order_address,
+            t_order.phone as order_phone,
+            oitems.productId as item_productId,
+            oitems.quantity as item_quantity
+        from orders t_order
+        left join order_items oitems on oitems.orderId = t_order.id;
     </select>
 </mapper>

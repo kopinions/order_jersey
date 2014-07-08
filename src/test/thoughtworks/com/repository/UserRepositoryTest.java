@@ -4,8 +4,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import thoughtworks.com.domain.Order;
-import thoughtworks.com.domain.User;
+import thoughtworks.com.domain.*;
+
+import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
@@ -43,7 +44,11 @@ public class UserRepositoryTest {
         User kayla = new User("kayla");
         userRepository.createUser(kayla);
 
-        Order orderForKayla = new Order("beijing", "orderForSofia", "13200000000", asList());
+        ProductRepository productRepository = sqlSession.getMapper(ProductRepository.class);
+
+        Product apple = new Product("apple", "red apple");
+        productRepository.createProduct(apple, new Price(10, new Date()));
+        Order orderForKayla = new Order("beijing", "orderForSofia", "13200000000", asList(new OrderItem(apple.getId(), 2)));
         userRepository.createOrderForUser(kayla, orderForKayla);
 
         assertThat(orderForKayla.getId()>0, is(true));
@@ -52,5 +57,8 @@ public class UserRepositoryTest {
         assertThat(orderForKaylaGot.getName(), is("orderForSofia"));
         assertThat(orderForKaylaGot.getAddress(), is("beijing"));
         assertThat(orderForKaylaGot.getPhone(), is("13200000000"));
+
+        assertThat(orderForKaylaGot.getOrderItems().size(), is(1));
+        assertThat(orderForKaylaGot.getOrderItems().get(0).getQuantity(), is(2));
     }
 }

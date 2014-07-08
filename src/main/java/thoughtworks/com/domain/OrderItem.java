@@ -1,8 +1,11 @@
 package thoughtworks.com.domain;
 
 public class OrderItem {
-    private final int productId;
-    private final int quantity;
+    private int productId;
+    private int quantity;
+
+    public OrderItem() {
+    }
 
     public OrderItem(int productId, int quantity) {
 
