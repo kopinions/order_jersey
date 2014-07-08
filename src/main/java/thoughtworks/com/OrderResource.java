@@ -49,7 +49,8 @@ public class OrderResource {
     }
 
     @Path("{orderId}/payment")
-    public PaymentResource payment() {
-        return new PaymentResource();
+    public PaymentResource payment(@PathParam("orderId") int orderId) {
+        Order order = userRepository.getUserOrderById(orderId);
+        return new PaymentResource(user, order, userRepository);
     }
 }
