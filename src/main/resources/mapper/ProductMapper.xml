@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="thoughtworks.com.repository.ProductRepository">
+    <resultMap id="productDetail" type="thoughtworks.com.domain.Product">
+        <id property="id" column="product_id"></id>
+        <result property="name" column="product_name"></result>
+        <result property="description" column="product_description"></result>
+        <association property="currentPrice" javaType="thoughtworks.com.domain.Price">
+            <id property="id" column="price_id"/>
+            <result property="amount" column="price_amount"/>
+            <result property="effectDate" column="price_effect_date"/>
+        </association>
+    </resultMap>
+    <insert id="createProduct" parameterType="thoughtworks.com.domain.Product">
+        <selectKey keyProperty="product.id" resultType="Integer" order="BEFORE">
+            select NEXTVAL('products_id_seq');
+        </selectKey>
+        insert into products (id, name, description) values (#{product.id}, #{product.name}, #{product.description});
+        insert into prices (amount, effectDate, productId) values (#{price.amount}, #{price.effectDate}, #{product.id});
+    </insert>
+
+    <select id="getProductById" resultMap="productDetail">
+      select
+        product.id as product_id,
+        product.name as product_name,
+        product.description as product_description,
+        a.id as price_id,
+        a.amount as price_amount,
+        a.effectDate as price_effect_date
+      from products product
+      left join (
+	    select price.amount, price.productId, price.effectDate, price.id from prices price
+	    inner join (select price.productId, max(effectDate) as effectDate from prices price group by price.productId) as p on p.productId=price.productId and p.effectDate=price.effectDate
+	  ) as a on product.id = a.productId where product.id = #{productId}
+    </select>
+</mapper>

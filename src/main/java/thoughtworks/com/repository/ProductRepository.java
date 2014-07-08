@@ -1,12 +1,13 @@
 package thoughtworks.com.repository;
 
+import org.apache.ibatis.annotations.Param;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 
 public interface ProductRepository {
-    Product getProductById(int productId);
+    Product getProductById(@Param("productId") int productId);
 
-    int createProduct(Product product, Price price);
+    int createProduct(@Param("product")Product product, @Param("price") Price price);
 
     Price getProductPriceById(Product product, int priceId);
 
