@@ -9,6 +9,8 @@ import thoughtworks.com.domain.Product;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -28,5 +30,23 @@ public class ProductRepositoryTest {
         assertThat(product.getName(), is(apple.getName()));
         assertThat(product.getDescription(), is("red apple"));
         assertThat(product.getCurrentPrice().getAmount(), is(10.0));
+    }
+
+    @Test
+    public void should_create_price_for_product() throws IOException, ParseException {
+        InputStream resourceAsStream = Resources.getResourceAsStream("mybatis.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);
+        ProductRepository productRepository = sqlSessionFactory.openSession().getMapper(ProductRepository.class);
+        Product apple = new Product("apple", "red apple");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int effectRow = productRepository.createProduct(apple, new Price(10, dateFormat.parse("2014-01-01")));
+
+        productRepository.createProductPrice(apple, new Price(100, new Date()));
+        Product product = productRepository.getProductById(apple.getId());
+
+        assertThat(effectRow, is(1));
+        assertThat(product.getName(), is(apple.getName()));
+        assertThat(product.getDescription(), is("red apple"));
+        assertThat(product.getCurrentPrice().getAmount(), is(100.0));
     }
 }

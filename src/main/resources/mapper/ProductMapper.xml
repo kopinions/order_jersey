@@ -35,4 +35,12 @@
 	    inner join (select price.productId, max(effectDate) as effectDate from prices price group by price.productId) as p on p.productId=price.productId and p.effectDate=price.effectDate
 	  ) as a on product.id = a.productId where product.id = #{productId}
     </select>
+
+
+    <insert id="createProductPrice" parameterType="thoughtworks.com.domain.Price">
+        <selectKey keyProperty="price.id" resultType="Integer" order="BEFORE">
+            select NEXTVAL('products_id_seq');
+        </selectKey>
+        insert into prices (amount, effectDate, productId) values (#{price.amount}, #{price.effectDate}, #{product.id});
+    </insert>
 </mapper>

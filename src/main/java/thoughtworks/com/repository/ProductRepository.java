@@ -11,5 +11,5 @@ public interface ProductRepository {
 
     Price getProductPriceById(Product product, int priceId);
 
-    int createProductPrice(Product any, Price any1);
+    int createProductPrice(@Param("product")Product product, @Param("price") Price price);
 }
