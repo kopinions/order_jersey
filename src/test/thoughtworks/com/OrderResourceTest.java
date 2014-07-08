@@ -10,6 +10,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import thoughtworks.com.domain.Order;
+import thoughtworks.com.domain.OrderItem;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.exception.OrderNotFound;
 import thoughtworks.com.exception.UserNotFound;
@@ -109,5 +110,7 @@ public class OrderResourceTest extends JerseyTest {
 
         Order orderCaptored = orderArgumentCaptor.getValue();
         assertThat(orderCaptored.getOrderItems().size(), is(1));
+        OrderItem orderItemCaptored = (OrderItem) orderCaptored.getOrderItems().get(0);
+        assertThat(orderItemCaptored.getQuantity(), is(2));
     }
 }
