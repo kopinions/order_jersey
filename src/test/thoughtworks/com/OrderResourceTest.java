@@ -60,7 +60,7 @@ public class OrderResourceTest extends JerseyTest {
 
     @Test
     public void should_get_order() {
-        when(mockUserRepository.getUserOrderById(eq(1))).thenReturn(new Order("beijing", "kayla", "13212344321", asList()));
+        when(mockUserRepository.getUserOrderById(eq(1))).thenReturn(new Order(1,"beijing", "kayla", "13212344321", asList()));
         Response response = target("/users/1/orders/1").request().get();
         assertThat(response.getStatus(), is(200));
 
@@ -69,6 +69,7 @@ public class OrderResourceTest extends JerseyTest {
         assertThat(order.get("name"), is("kayla"));
         assertThat(order.get("phone"), is("13212344321"));
 
+        assertThat(order.get("uri").toString(), endsWith("/users/1/orders/1"));
     }
 
     @Test

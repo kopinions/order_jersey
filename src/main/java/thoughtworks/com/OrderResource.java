@@ -28,9 +28,9 @@ public class OrderResource {
     @GET
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public OrderJson getOrder(@PathParam("orderId") int orderId) {
+    public OrderJson getOrder(@PathParam("orderId") int orderId, @Context UriInfo uriInfo) {
         Order order = userRepository.getUserOrderById(orderId);
-        return new OrderJson(order);
+        return new OrderJson(order, uriInfo);
     }
 
     @POST

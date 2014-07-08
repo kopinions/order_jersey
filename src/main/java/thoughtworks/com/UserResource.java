@@ -1,7 +1,8 @@
-package thoughtworks.com.repository;
+package thoughtworks.com;
 
 import thoughtworks.com.OrderResource;
 import thoughtworks.com.domain.User;
+import thoughtworks.com.repository.UserRepository;
 
 import javax.inject.Inject;
 import javax.ws.rs.Path;
