@@ -36,6 +36,7 @@ public class PaymentResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createPayment(@Context UriInfo uriInfo) {
+        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment());
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
     
