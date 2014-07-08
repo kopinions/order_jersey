@@ -3,13 +3,12 @@ package thoughtworks.com;
 import thoughtworks.com.domain.Order;
 import thoughtworks.com.domain.OrderItem;
 import thoughtworks.com.domain.User;
+import thoughtworks.com.json.OrderJson;
 import thoughtworks.com.repository.UserRepository;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -28,9 +27,10 @@ public class OrderResource {
 
     @GET
     @Path("{orderId}")
-    public String getOrder(@PathParam("orderId") int orderId) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public OrderJson getOrder(@PathParam("orderId") int orderId) {
         Order order = userRepository.getUserOrderById(orderId);
-        return "test";
+        return new OrderJson(order);
     }
 
     @POST

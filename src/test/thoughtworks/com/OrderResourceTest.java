@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
@@ -59,8 +60,15 @@ public class OrderResourceTest extends JerseyTest {
 
     @Test
     public void should_get_order() {
+        when(mockUserRepository.getUserOrderById(eq(1))).thenReturn(new Order("beijing", "kayla", "13212344321", asList()));
         Response response = target("/users/1/orders/1").request().get();
         assertThat(response.getStatus(), is(200));
+
+        Map order = response.readEntity(Map.class);
+        assertThat(order.get("address"), is("beijing"));
+        assertThat(order.get("name"), is("kayla"));
+        assertThat(order.get("phone"), is("13212344321"));
+
     }
 
     @Test
