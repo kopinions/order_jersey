@@ -8,8 +8,10 @@ import thoughtworks.com.repository.UserRepository;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 public class PaymentResource {
 
@@ -33,7 +35,8 @@ public class PaymentResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createPayment() {
-        return Response.status(201).build();
+    public Response createPayment(@Context UriInfo uriInfo) {
+        return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
+    
 }

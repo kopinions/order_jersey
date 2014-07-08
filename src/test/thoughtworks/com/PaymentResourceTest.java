@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import thoughtworks.com.domain.Order;
+import thoughtworks.com.domain.Payment;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.exception.PaymentNotFound;
 import thoughtworks.com.repository.UserRepository;
@@ -16,11 +17,11 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -65,5 +66,7 @@ public class PaymentResourceTest extends JerseyTest {
         Response response = target("/users/1/orders/2/payment").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 
         assertThat(response.getStatus(), is(201));
+
+        assertThat(response.getLocation().toString(), endsWith("/users/1/orders/2/payment"));
     }
 }

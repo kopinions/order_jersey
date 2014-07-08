@@ -12,4 +12,7 @@ public interface UserRepository {
     int createOrderForUser(User user, Order order);
 
     Payment getUserOrderPayment(User user, Order order);
+
+    int createPaymentForUserOrder(User user, Order order, Payment payment);
+
 }
