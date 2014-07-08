@@ -79,6 +79,7 @@ public class PaymentResourceTest extends JerseyTest {
         when(userRepository.getUserOrderById(eq(2))).thenReturn(new Order(2, "beijing", "sofia", "", asList()));
         Map payment = new HashMap<>();
         payment.put("type", "CASH");
+        payment.put("amount", 100);
         Response response = target("/users/1/orders/2/payment").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 
         assertThat(response.getStatus(), is(201));
@@ -90,7 +91,6 @@ public class PaymentResourceTest extends JerseyTest {
         assertThat(orderArgumentCaptor.getValue().getName(), is("sofia"));
 
         assertThat(paymentArgumentCaptor.getValue().getType(), is("CASH"));
-
-
+        assertThat(paymentArgumentCaptor.getValue().getAmount(), is(100.0));
     }
 }

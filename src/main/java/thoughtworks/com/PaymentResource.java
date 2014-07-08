@@ -38,7 +38,8 @@ public class PaymentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createPayment(@Context UriInfo uriInfo, Map payment) {
         String payType = payment.get("type").toString();
-        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment(payType));
+        double amount = Double.valueOf(payment.get("amount").toString());
+        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment(payType, amount));
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
     
