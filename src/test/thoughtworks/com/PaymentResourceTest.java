@@ -12,8 +12,13 @@ import thoughtworks.com.domain.User;
 import thoughtworks.com.exception.PaymentNotFound;
 import thoughtworks.com.repository.UserRepository;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -51,5 +56,14 @@ public class PaymentResourceTest extends JerseyTest {
         Response response = target("/users/1/orders/2/payment").request().get();
 
         assertThat(response.getStatus(), is(404));
+    }
+
+    @Test
+    public void should_create_payment_for_user_order() {
+        Map payment = new HashMap<>();
+        payment.put("type", "CASH");
+        Response response = target("/users/1/orders/2/payment").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
+
+        assertThat(response.getStatus(), is(201));
     }
 }
