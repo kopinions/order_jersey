@@ -1,6 +1,5 @@
-package thoughtworks.com;
+package thoughtworks.com.resource;
 
-import thoughtworks.com.OrderResource;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.repository.UserRepository;
 
