@@ -71,7 +71,7 @@ public class UserRepositoryTest {
         Order orderForKayla = new Order("beijing", "kayla", "13200000000", asList());
         userRepository.createOrderForUser(sofia, orderForKayla);
         Payment paymentOfOrderForKayla = new Payment("CASH", 100);
-        int effectRow = userRepository.createPaymentForUserOrder(sofia, orderForKayla, paymentOfOrderForKayla);
+        int effectRow = userRepository.createPaymentForUserOrder(orderForKayla, paymentOfOrderForKayla);
         assertThat(effectRow>0, is(true));
 
         Payment payment = userRepository.getOrderPayment(orderForKayla);

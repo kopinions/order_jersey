@@ -16,6 +16,6 @@ public interface UserRepository {
 
     Payment getOrderPayment(@Param("order") Order order);
 
-    int createPaymentForUserOrder(User user, @Param("order") Order order, @Param("payment") Payment payment);
+    int createPaymentForUserOrder(@Param("order") Order order, @Param("payment") Payment payment);
 
 }

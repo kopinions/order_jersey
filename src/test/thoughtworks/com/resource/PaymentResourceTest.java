@@ -38,9 +38,6 @@ public class PaymentResourceTest extends JerseyTest {
     UserRepository userRepository;
 
     @Captor
-    ArgumentCaptor<User> userArgumentCaptor;
-
-    @Captor
     ArgumentCaptor<Order> orderArgumentCaptor;
 
     @Captor
@@ -93,8 +90,7 @@ public class PaymentResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(201));
 
         assertThat(response.getLocation().toString(), endsWith("/users/1/orders/2/payment"));
-        verify(userRepository).createPaymentForUserOrder(userArgumentCaptor.capture(), orderArgumentCaptor.capture(), paymentArgumentCaptor.capture());
-        assertThat(userArgumentCaptor.getValue().getName(), is("kayla"));
+        verify(userRepository).createPaymentForUserOrder(orderArgumentCaptor.capture(), paymentArgumentCaptor.capture());
 
         assertThat(orderArgumentCaptor.getValue().getName(), is("sofia"));
 

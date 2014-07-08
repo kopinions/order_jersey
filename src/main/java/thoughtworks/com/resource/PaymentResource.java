@@ -40,7 +40,7 @@ public class PaymentResource {
     public Response createPayment(@Context UriInfo uriInfo, Map payment) {
         String payType = payment.get("type").toString();
         double amount = Double.valueOf(payment.get("amount").toString());
-        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment(payType, amount));
+        int paymentResult = userRepository.createPaymentForUserOrder(order, new Payment(payType, amount));
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
     
