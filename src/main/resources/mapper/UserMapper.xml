@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="thoughtworks.com.repository.UserRepository">
+    <insert id="createUser" parameterType="thoughtworks.com.domain.User">
+        <selectKey keyProperty="user.id" order="BEFORE" resultType="Integer">
+            select NEXTVAL('users_id_seq');
+        </selectKey>
+        insert into users (id, name) values (#{user.id}, #{user.name});
+    </insert>
+
+    <select id="getUserById" resultType="thoughtworks.com.domain.User">
+      select id, name from users where id = #{userId};
+    </select>
+</mapper>

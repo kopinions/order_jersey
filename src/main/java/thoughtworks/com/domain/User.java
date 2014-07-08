@@ -2,19 +2,27 @@ package thoughtworks.com.domain;
 
 public class User {
     private int id;
-    private String username;
+    private String name;
 
-    public User(int id, String username) {
+    public User(int id, String name) {
 
         this.id = id;
-        this.username = username;
+        this.name = name;
     }
 
     public User() {
 
     }
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public String getName() {
-        return username;
+        return name;
+    }
+
+    public int getId() {
+        return id;
     }
 }
