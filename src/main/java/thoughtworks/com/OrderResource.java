@@ -47,4 +47,9 @@ public class OrderResource {
         int orderId = userRepository.createOrderForUser(user, new Order(address, name, phone, orderItemsCreated));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();
     }
+
+    @Path("{orderId}/payment")
+    public PaymentResource payment() {
+        return new PaymentResource();
+    }
 }
