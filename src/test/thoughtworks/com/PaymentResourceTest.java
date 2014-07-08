@@ -10,6 +10,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import thoughtworks.com.domain.Order;
+import thoughtworks.com.domain.Payment;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.exception.PaymentNotFound;
 import thoughtworks.com.repository.UserRepository;
@@ -21,11 +22,11 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +39,12 @@ public class PaymentResourceTest extends JerseyTest {
 
     @Captor
     ArgumentCaptor<User> userArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Order> orderArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Payment> paymentArgumentCaptor;
 
     @Override
     protected Application configure() {
@@ -69,6 +76,7 @@ public class PaymentResourceTest extends JerseyTest {
     @Test
     public void should_create_payment_for_user_order() {
         when(userRepository.getUserById(eq(1))).thenReturn(new User(1, "kayla"));
+        when(userRepository.getUserOrderById(eq(2))).thenReturn(new Order(2, "beijing", "sofia", "", asList()));
         Map payment = new HashMap<>();
         payment.put("type", "CASH");
         Response response = target("/users/1/orders/2/payment").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
@@ -76,7 +84,13 @@ public class PaymentResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(201));
 
         assertThat(response.getLocation().toString(), endsWith("/users/1/orders/2/payment"));
-        verify(userRepository).createPaymentForUserOrder(userArgumentCaptor.capture(), anyObject(), anyObject());
+        verify(userRepository).createPaymentForUserOrder(userArgumentCaptor.capture(), orderArgumentCaptor.capture(), paymentArgumentCaptor.capture());
         assertThat(userArgumentCaptor.getValue().getName(), is("kayla"));
+
+        assertThat(orderArgumentCaptor.getValue().getName(), is("sofia"));
+
+        assertThat(paymentArgumentCaptor.getValue().getType(), is("CASH"));
+
+
     }
 }

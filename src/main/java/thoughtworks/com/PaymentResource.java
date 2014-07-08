@@ -12,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Map;
 
 public class PaymentResource {
 
@@ -35,8 +36,9 @@ public class PaymentResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createPayment(@Context UriInfo uriInfo) {
-        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment());
+    public Response createPayment(@Context UriInfo uriInfo, Map payment) {
+        String payType = payment.get("type").toString();
+        int paymentResult = userRepository.createPaymentForUserOrder(user, order, new Payment(payType));
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
     }
     
