@@ -62,7 +62,11 @@ public class PaymentResourceTest extends JerseyTest {
     @Test
     public void should_return_200_when_get_payment() {
         Response response = target("/users/1/orders/2/payment").request().get();
+
         assertThat(response.getStatus(), is(200));
+
+        Map payment = response.readEntity(Map.class);
+        assertThat(payment.get("uri").toString(), endsWith("/users/1/orders/2/payment"));
     }
 
     @Test

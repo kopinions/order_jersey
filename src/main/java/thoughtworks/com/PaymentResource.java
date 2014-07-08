@@ -3,11 +3,12 @@ package thoughtworks.com;
 import thoughtworks.com.domain.Order;
 import thoughtworks.com.domain.Payment;
 import thoughtworks.com.domain.User;
+import thoughtworks.com.json.PaymentJson;
 import thoughtworks.com.repository.UserRepository;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,13 +30,13 @@ public class PaymentResource {
     }
 
     @GET
-    public String getPayment() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public PaymentJson getPayment(@Context UriInfo uriInfo) {
         Payment payment = userRepository.getUserOrderPayment(user, order);
-        return "test";
+        return new PaymentJson(uriInfo);
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response createPayment(@Context UriInfo uriInfo, Map payment) {
         String payType = payment.get("type").toString();
         double amount = Double.valueOf(payment.get("amount").toString());
