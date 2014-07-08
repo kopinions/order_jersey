@@ -19,7 +19,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -87,6 +89,13 @@ public class OrderResourceTest extends JerseyTest {
         order.put("name", "kayla");
         order.put("phone", "13212344321");
 
+        List orderItems = new ArrayList<>();
+        Map orderItem = new HashMap<>();
+        orderItem.put("productId", 2);
+        orderItem.put("quantity", 2);
+        orderItems.add(orderItem);
+        order.put("orderItems", orderItems);
+
         Response response = target("/users/1/orders").request().post(Entity.entity(order, MediaType.APPLICATION_JSON_TYPE));
         assertThat(response.getStatus(), is(201));
         assertThat(response.getLocation().toString(), endsWith("/users/1/orders/2"));
@@ -97,5 +106,8 @@ public class OrderResourceTest extends JerseyTest {
         assertThat(orderArgumentCaptor.getValue().getAddress(), is("beijing"));
         assertThat(orderArgumentCaptor.getValue().getName(), is("kayla"));
         assertThat(orderArgumentCaptor.getValue().getPhone(), is("13212344321"));
+
+        Order orderCaptored = orderArgumentCaptor.getValue();
+        assertThat(orderCaptored.getOrderItems().size(), is(1));
     }
 }

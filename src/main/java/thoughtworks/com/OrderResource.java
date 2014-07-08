@@ -1,6 +1,7 @@
 package thoughtworks.com;
 
 import thoughtworks.com.domain.Order;
+import thoughtworks.com.domain.OrderItem;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.repository.UserRepository;
 
@@ -11,7 +12,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 public class OrderResource {
     private User user;
@@ -34,7 +38,13 @@ public class OrderResource {
         String address = order.get("address").toString();
         String name = order.get("name").toString();
         String phone = order.get("phone").toString();
-        int orderId = userRepository.createOrderForUser(user, new Order(address, name, phone));
+
+        List orderItems = (List) order.get("orderItems");
+        orderItems.stream().map(item -> {
+            Map map = (Map) item;
+            return new OrderItem(Integer.valueOf(map.get("productId").toString()), Integer.valueOf(map.get("quantity").toString()));
+        }).collect(toList());
+        int orderId = userRepository.createOrderForUser(user, new Order(address, name, phone, orderItems));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();
     }
 }
