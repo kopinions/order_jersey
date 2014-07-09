@@ -31,6 +31,7 @@ dependencies {
     compile "org.mybatis:mybatis:3.2.7"
     compile "org.postgresql:postgresql:9.3-1101-jdbc41"
     compile "log4j:log4j:1.2.16"
+    compile "org.mongodb:mongo-java-driver:2.12.2"
 
     testCompile "org.glassfish.jersey.test-framework:jersey-test-framework-core:2.10.1"
     testCompile 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.10.1'

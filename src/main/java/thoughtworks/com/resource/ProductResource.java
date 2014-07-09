@@ -1,5 +1,6 @@
 package thoughtworks.com.resource;
 
+import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 import thoughtworks.com.json.ProductJson;
@@ -25,8 +26,8 @@ public class ProductResource {
     @GET
     @Path("{productId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProductJson getProduct(@PathParam("productId") int id, @Context UriInfo uriInfo) {
-        Product product = productRepository.getProductById(id);
+    public ProductJson getProduct(@PathParam("productId") String id, @Context UriInfo uriInfo) {
+        Product product = productRepository.getProductById(new ObjectId(id));
         return new ProductJson(product, uriInfo);
     }
 
@@ -52,8 +53,8 @@ public class ProductResource {
     }
 
     @Path("{productId}/prices")
-    public PricesResource getProductPrice(@PathParam("productId") int id) {
-        Product product = productRepository.getProductById(id);
+    public PricesResource getProductPrice(@PathParam("productId") String id) {
+        Product product = productRepository.getProductById(new ObjectId(id));
         return new PricesResource(product, productRepository);
     }
 }

@@ -1,7 +1,9 @@
 package thoughtworks.com.domain;
 
+import org.bson.types.ObjectId;
+
 public class Product {
-    private int id;
+    private ObjectId id;
     private String description;
     private String name;
     private Price currentPrice;
@@ -9,8 +11,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String productName, String description) {
-        this.id = id;
+    public Product(ObjectId id, String productName, String description) {
+        this.setId(id);
         this.description = description;
         this.name = productName;
     }
@@ -20,8 +22,8 @@ public class Product {
         this.description = description;
     }
 
-    public Product(int id, String name, String description, Price currentPrice) {
-        this.id = id;
+    public Product(ObjectId id, String name, String description, Price currentPrice) {
+        this.setId(id);
         this.name = name;
         this.description = description;
         this.currentPrice = currentPrice;
@@ -39,7 +41,11 @@ public class Product {
         return currentPrice;
     }
 
-    public int getId() {
+    public ObjectId getId() {
         return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }

@@ -1,5 +1,6 @@
 package thoughtworks.com.resource;
 
+import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
 import thoughtworks.com.json.PriceJson;
@@ -46,7 +47,7 @@ public class PricesResource {
         } catch (ParseException e) {
             return Response.status(400).build();
         }
-        int priceId = productRepository.createProductPrice(product, new Price(amount, effectDate));
+        ObjectId priceId = productRepository.createProductPrice(product, new Price(amount, effectDate));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(priceId)).build()).build();
     }
 }
