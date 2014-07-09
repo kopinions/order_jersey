@@ -9,7 +9,7 @@ public interface ProductRepository {
 
     int createProduct(Product product, Price price);
 
-    Price getProductPriceById(Product product, int priceId);
+    Price getProductPriceById(Product product, ObjectId priceId);
 
-    ObjectId createProductPrice(Product product, Price price);
+    int createProductPrice(Product product, Price price);
 }

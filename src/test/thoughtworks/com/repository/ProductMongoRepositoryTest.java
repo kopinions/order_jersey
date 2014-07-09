@@ -30,8 +30,18 @@ public class ProductMongoRepositoryTest {
         Product apple = new Product("apple", "red apple");
         Price price = new Price(100, new Date());
 
-        int effectCount = productRepository.createProduct(apple, price);
+        productRepository.createProduct(apple, price);
         Product product = productRepository.getProductById(apple.getId());
         assertThat(product.getName(), is("apple"));
+    }
+
+    @Test
+    public void should_create_and_get_price_for_proruct() {
+        Product apple = new Product("apple", "red apple");
+        productRepository.createProduct(apple, new Price(100, new Date()));
+        Price price = new Price(200, new Date());
+        productRepository.createProductPrice(apple, price);
+        Price priceGot = productRepository.getProductPriceById(apple, price.getId());
+        assertThat(priceGot.getAmount(), is(200.0));
     }
 }

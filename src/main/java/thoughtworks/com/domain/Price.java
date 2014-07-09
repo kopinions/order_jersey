@@ -1,11 +1,13 @@
 package thoughtworks.com.domain;
 
+import org.bson.types.ObjectId;
+
 import java.util.Date;
 
 public class Price {
     private double amount;
     private Date effectDate;
-    private int id;
+    private ObjectId id;
 
     public Price(double amount, Date effectDate) {
         this.amount = amount;
@@ -15,7 +17,7 @@ public class Price {
     public Price() {
     }
 
-    public Price(int id, double amount, Date effectDate) {
+    public Price(ObjectId id, double amount, Date effectDate) {
         this.id = id;
         this.amount = amount;
         this.effectDate = effectDate;
@@ -29,7 +31,11 @@ public class Price {
         return effectDate;
     }
 
-    public int getId() {
+    public ObjectId getId() {
         return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }

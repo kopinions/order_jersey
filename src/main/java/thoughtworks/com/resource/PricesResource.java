@@ -30,8 +30,8 @@ public class PricesResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public PriceJson getPrice(@PathParam("id") int id, @Context UriInfo uriInfo) {
-        Price price = productRepository.getProductPriceById(product, id);
+    public PriceJson getPrice(@PathParam("id") String id, @Context UriInfo uriInfo) {
+        Price price = productRepository.getProductPriceById(product, new ObjectId(id));
         return new PriceJson(price, uriInfo);
     }
 
@@ -47,7 +47,7 @@ public class PricesResource {
         } catch (ParseException e) {
             return Response.status(400).build();
         }
-        ObjectId priceId = productRepository.createProductPrice(product, new Price(amount, effectDate));
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(priceId)).build()).build();
+        int effectCount = productRepository.createProductPrice(product, new Price(amount, effectDate));
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(effectCount)).build()).build();
     }
 }

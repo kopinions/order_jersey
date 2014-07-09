@@ -1,10 +1,14 @@
 package thoughtworks.com.repository;
 
 import com.mongodb.*;
-import org.apache.ibatis.annotations.Param;
 import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class ProductRepositoryImpl implements ProductRepository {
     private DB db;
@@ -44,12 +48,33 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Price getProductPriceById(@Param("product") Product product, @Param("priceId") int priceId) {
-        return null;
+    public Price getProductPriceById(Product product,  ObjectId priceId) {
+        DBObject findPrice = db.getCollection("prices").findOne(new BasicDBObject("productId", product.getId()).append("_id", priceId));
+        System.out.println(findPrice.get("effectDate"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date effectDate = null;
+        try {
+            effectDate = dateFormat.parse(findPrice.get("effectDate").toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new Price(priceId, Double.valueOf(findPrice.get("amount").toString()), effectDate);
     }
 
     @Override
-    public ObjectId createProductPrice(@Param("product") Product product, @Param("price") Price price) {
-        return ObjectId.massageToObjectId(0);
+    public int createProductPrice(Product product,Price price) {
+        ObjectId priceId = new ObjectId();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formatedDateString = dateFormat.format(price.getEffectDate());
+        DBObject priceDoc = new BasicDBObjectBuilder()
+                .add("productId", product.getId())
+                .add("_id", priceId)
+                .add("amount", price.getAmount())
+                .add("effectDate", formatedDateString).get();
+        db.getCollection("prices").insert(priceDoc);
+        price.setId(priceId);
+        return 1;
     }
 }
