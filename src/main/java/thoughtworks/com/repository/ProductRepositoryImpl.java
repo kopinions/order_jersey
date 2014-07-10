@@ -73,6 +73,15 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .add("_id", priceId)
                 .add("amount", price.getAmount())
                 .add("effectDate", formatedDateString).get();
+        DBObject findedProduct = db.getCollection("products").findOne(new BasicDBObject("_id", product.getId()));
+        BasicDBList historyPrices = (BasicDBList) findedProduct.get("historyPrices");
+        if (historyPrices == null) {
+            historyPrices = new BasicDBList();
+        }
+        historyPrices.add(priceDoc);
+        findedProduct.put("historyPrices", historyPrices);
+
+        db.getCollection("products").findAndModify(new BasicDBObject("_id", product.getId()), findedProduct);
         db.getCollection("prices").insert(priceDoc);
         price.setId(priceId);
         return 1;
