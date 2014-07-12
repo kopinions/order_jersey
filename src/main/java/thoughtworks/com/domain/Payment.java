@@ -3,7 +3,6 @@ package thoughtworks.com.domain;
 public class Payment {
     private String payType;
     private double amount;
-    private int id;
 
     public Payment() {
     }
@@ -22,7 +21,4 @@ public class Payment {
         return amount;
     }
 
-    public int getId() {
-        return id;
-    }
 }

@@ -42,4 +42,16 @@ public class UserRepositoryMongoTest {
         assertThat(orderOfKayla.getOrderItems().get(0).getProductId(), is(apple.getId()));
         assertThat(orderOfKayla.getOrderItems().get(0).getQuantity(), is(2));
     }
+
+    @Test
+    public void should_create_payment_for_order(){
+        Product apple = new Product("apple", "red apple");
+        productRepository.createProduct(apple, new Price(1, new Date()));
+        User kayla = userRepository.createUser(new User("kayla"));
+        Order orderOfKayla = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
+        userRepository.createPaymentForUserOrder(orderOfKayla, new Payment("CASH", 100));
+        Payment orderPayment = userRepository.getOrderPayment(orderOfKayla);
+        assertThat(orderPayment.getAmount(), is(100.0));
+        assertThat(orderPayment.getPayType(), is("CASH"));
+    }
 }

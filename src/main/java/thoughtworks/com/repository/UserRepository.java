@@ -16,6 +16,6 @@ public interface UserRepository {
 
     Payment getOrderPayment(Order order);
 
-    int createPaymentForUserOrder(Order order, Payment payment);
+    Payment createPaymentForUserOrder(Order order, Payment payment);
 
 }

@@ -73,11 +73,22 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Payment getOrderPayment(@Param("order") Order order) {
-        return null;
+
+        Map orderDoc = db.getCollection("orders").findOne(new BasicDBObject("_id", order.getId())).toMap();
+
+        Map payment = (Map) orderDoc.get("payment");
+        return new Payment(payment.get("payType").toString(), Double.valueOf(payment.get("amount").toString()));
     }
 
     @Override
-    public int createPaymentForUserOrder(@Param("order") Order order, @Param("payment") Payment payment) {
-        return 0;
+    public Payment createPaymentForUserOrder(Order order, Payment payment) {
+
+        DBCollection orders = db.getCollection("orders");
+        DBObject orderDoc = orders.findOne(new BasicDBObject("_id", order.getId()));
+        orderDoc.put("payment", new BasicDBObject("payType", payment.getPayType()).append("amount", payment.getAmount()));
+        orders.findAndModify(new BasicDBObject("_id", order.getId()), orderDoc);
+        return payment;
     }
+
+
 }
