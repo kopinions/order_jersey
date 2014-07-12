@@ -25,7 +25,7 @@ public class UserRepositoryMongoTest {
 
     @Test
     public void should_create_user_and_can_get_created_user() throws Exception {
-        User kayla = userRepository.createUser(new User("kayla"));
+        User kayla = userRepository.createUser(new UserBuilder().name("kayla").build());
         User findedKayla = userRepository.getUserById(kayla.getId());
         assertThat(findedKayla.getName(), is("kayla"));
     }
@@ -34,7 +34,7 @@ public class UserRepositoryMongoTest {
     public void should_create_order_for_user() {
         Product apple = new Product("apple", "red apple");
         productRepository.createProduct(apple, new Price(1, new Date()));
-        User kayla = userRepository.createUser(new User("kayla"));
+        User kayla = userRepository.createUser(new UserBuilder().name("kayla").build());
         Order order = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
         Order orderOfKayla = userRepository.getUserOrderById(kayla, order.getId());
         assertThat(orderOfKayla.getName(), is("sofia"));
@@ -47,7 +47,7 @@ public class UserRepositoryMongoTest {
     public void should_create_payment_for_order(){
         Product apple = new Product("apple", "red apple");
         productRepository.createProduct(apple, new Price(1, new Date()));
-        User kayla = userRepository.createUser(new User("kayla"));
+        User kayla = userRepository.createUser(new UserBuilder().name("kayla").build());
         Order orderOfKayla = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
         userRepository.createPaymentForUserOrder(orderOfKayla, new Payment("CASH", 100));
         Payment orderPayment = userRepository.getOrderPayment(orderOfKayla);

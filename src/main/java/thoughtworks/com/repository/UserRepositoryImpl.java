@@ -3,10 +3,7 @@ package thoughtworks.com.repository;
 import com.mongodb.*;
 import org.apache.ibatis.annotations.Param;
 import org.bson.types.ObjectId;
-import thoughtworks.com.domain.Order;
-import thoughtworks.com.domain.OrderItem;
-import thoughtworks.com.domain.Payment;
-import thoughtworks.com.domain.User;
+import thoughtworks.com.domain.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +22,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserById(ObjectId userId) {
         DBObject one = db.getCollection("users").findOne(new BasicDBObject("_id", userId));
         Map map = one.toMap();
-        User user = new User(new ObjectId(map.get("_id").toString()),map.get("name").toString());
+        User user = new UserBuilder().id(new ObjectId(map.get("_id").toString())).name(map.get("name").toString()).build();
         return user;
     }
 
@@ -46,7 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
         DBObject orderDoc = db.getCollection("orders").findOne(new BasicDBObject("_id", orderId).append("userId", user.getId()));
         Map map = orderDoc.toMap();
         List<Map> orderItems = (List) map.get("orderItems");
-        List<OrderItem> orderItemsList = orderItems.stream().map(item -> new OrderItem(new ObjectId(item.get("_id").toString()), new ObjectId(item.get("productId").toString()), Integer.valueOf(item.get("quantity").toString()))).collect(toList());
+        List<OrderItem> orderItemsList = orderItems.stream().map(item -> new OrderItem(new ObjectId(item.get("productId").toString()), Integer.valueOf(item.get("quantity").toString()))).collect(toList());
         Order order = new Order(new ObjectId(map.get("_id").toString()), map.get("address").toString(), map.get("name").toString(), map.get("phone").toString(), orderItemsList);
         return order;
     }

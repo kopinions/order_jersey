@@ -3,8 +3,8 @@ package thoughtworks.com.domain;
 import org.bson.types.ObjectId;
 
 public class User {
-    private ObjectId id;
-    private String name;
+    ObjectId id;
+    String name;
 
     public User(ObjectId id, String name) {
 
