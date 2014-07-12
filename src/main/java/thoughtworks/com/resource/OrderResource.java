@@ -43,7 +43,7 @@ public class OrderResource {
         List orderItems = (List) order.get("orderItems");
         List<OrderItem> orderItemsCreated = (List<OrderItem>) orderItems.stream().map(item -> {
             Map map = (Map) item;
-            return new OrderItem(Integer.valueOf(map.get("productId").toString()), Integer.valueOf(map.get("quantity").toString()));
+            return new OrderItem(new ObjectId(map.get("productId").toString()), Integer.valueOf(map.get("quantity").toString()));
         }).collect(toList());
         Order orderId = userRepository.createOrderForUser(user, new Order(address, name, phone, orderItemsCreated));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();

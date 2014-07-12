@@ -4,8 +4,9 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
-import thoughtworks.com.domain.Order;
-import thoughtworks.com.domain.User;
+import thoughtworks.com.domain.*;
+
+import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
@@ -13,12 +14,13 @@ import static org.junit.Assert.assertThat;
 
 public class UserRepositoryMongoTest {
     UserRepositoryImpl userRepository;
-
+    ProductRepositoryImpl productRepository;
     @Before
     public void setUp() throws Exception {
         MongoClient mongoClient = new MongoClient("localhost", 27017);
         DB test = mongoClient.getDB("test");
         userRepository = new UserRepositoryImpl(test);
+        productRepository = new ProductRepositoryImpl(test);
     }
 
     @Test
@@ -29,10 +31,15 @@ public class UserRepositoryMongoTest {
     }
 
     @Test
-    public void should_create_order_for_user(){
+    public void should_create_order_for_user() {
+        Product apple = new Product("apple", "red apple");
+        productRepository.createProduct(apple, new Price(1, new Date()));
         User kayla = userRepository.createUser(new User("kayla"));
-        Order order = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList()));
+        Order order = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
         Order orderOfKayla = userRepository.getUserOrderById(kayla, order.getId());
         assertThat(orderOfKayla.getName(), is("sofia"));
+        assertThat(orderOfKayla.getOrderItems().size(), is(1));
+        assertThat(orderOfKayla.getOrderItems().get(0).getProductId(), is(apple.getId()));
+        assertThat(orderOfKayla.getOrderItems().get(0).getQuantity(), is(2));
     }
 }

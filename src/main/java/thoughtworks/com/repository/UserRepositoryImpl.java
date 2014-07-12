@@ -1,18 +1,17 @@
 package thoughtworks.com.repository;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DB;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import org.apache.ibatis.annotations.Param;
 import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Order;
+import thoughtworks.com.domain.OrderItem;
 import thoughtworks.com.domain.Payment;
 import thoughtworks.com.domain.User;
 
+import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public class UserRepositoryImpl implements UserRepository {
     private DB db;
@@ -46,7 +45,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Order getUserOrderById(User user, ObjectId orderId) {
         DBObject orderDoc = db.getCollection("orders").findOne(new BasicDBObject("_id", orderId).append("userId", user.getId()));
         Map map = orderDoc.toMap();
-        Order order = new Order(new ObjectId(map.get("_id").toString()), map.get("address").toString(), map.get("name").toString(), map.get("phone").toString(), asList());
+        List<Map> orderItems = (List) map.get("orderItems");
+        List<OrderItem> orderItemsList = orderItems.stream().map(item -> new OrderItem(new ObjectId(item.get("_id").toString()), new ObjectId(item.get("productId").toString()), Integer.valueOf(item.get("quantity").toString()))).collect(toList());
+        Order order = new Order(new ObjectId(map.get("_id").toString()), map.get("address").toString(), map.get("name").toString(), map.get("phone").toString(), orderItemsList);
         return order;
     }
 
@@ -54,12 +55,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Order createOrderForUser(User user, Order order) {
         ObjectId orderId = new ObjectId();
+        BasicDBList orderItems = new BasicDBList();
+        order.getOrderItems().stream().forEach(item -> orderItems.add(new BasicDBObject("productId", item.getProductId()).append("_id", new ObjectId()).append("quantity", item.getQuantity())));
         DBObject orderDoc = new BasicDBObjectBuilder()
                 .add("_id", orderId)
                 .add("name", order.getName())
                 .add("address", order.getAddress())
                 .add("phone", order.getPhone())
                 .add("userId", user.getId())
+                .add("orderItems", orderItems)
                 .get();
         db.getCollection("orders").insert(orderDoc);
         order.setId(orderId);

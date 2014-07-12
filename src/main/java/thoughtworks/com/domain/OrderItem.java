@@ -1,19 +1,28 @@
 package thoughtworks.com.domain;
 
+import org.bson.types.ObjectId;
+
 public class OrderItem {
-    private int productId;
+    private ObjectId id;
+    private ObjectId productId;
     private int quantity;
 
-    public OrderItem() {
+    public OrderItem(ObjectId id, ObjectId productId, Integer quantity) {
+        this.id = id;
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
-    public OrderItem(int productId, int quantity) {
-
+    public OrderItem(ObjectId productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public ObjectId getProductId() {
+        return productId;
     }
 }
