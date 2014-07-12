@@ -9,6 +9,8 @@ import thoughtworks.com.domain.Product;
 import thoughtworks.com.domain.ProductBuilder;
 
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -44,8 +46,17 @@ public class ProductMongoRepositoryTest {
         Product apple = new ProductBuilder().name("apple").description("red apple").currentPrice(new Price(100, new Date())).build();
         productRepository.createProduct(apple);
         Price price = new Price(200, new Date());
-        productRepository.createProductPrice(apple, price);
-        Price priceGot = productRepository.getProductPriceById(apple, price.getId());
+        Price createdPrice = productRepository.createProductPrice(apple, price);
+        Price priceGot = productRepository.getProductPriceById(apple, createdPrice.getId());
         assertThat(priceGot.getAmount(), is(200.0));
+    }
+
+    @Test
+    public void should_create_price_and_set_current_price_when_date_is_newer() throws ParseException {
+        Product apple = new ProductBuilder().name("apple").description("red apple").currentPrice(new Price(100, new SimpleDateFormat("yyyy-MM-dd").parse("2014-01-01"))).build();
+        productRepository.createProduct(apple);
+        productRepository.createProductPrice(apple, new Price(200, new Date()));
+        Product findApple = productRepository.getProductById(apple.getId());
+        assertThat(findApple.getCurrentPrice().getAmount(), is(200.0));
     }
 }

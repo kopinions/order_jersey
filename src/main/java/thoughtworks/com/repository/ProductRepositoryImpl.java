@@ -27,9 +27,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Price currentPrice;
         try {
-            currentPrice = new Price(Double.valueOf(currentPriceDoc.get("amount").toString()), dateFormat.parse(currentPriceDoc.get("effectDate").toString()));
+            currentPrice = new Price(new ObjectId(currentPriceDoc.get("_id").toString()),Double.valueOf(currentPriceDoc.get("amount").toString()), dateFormat.parse(currentPriceDoc.get("effectDate").toString()));
         } catch (ParseException e) {
-
             return null;
         }
         return new ProductBuilder()
@@ -81,7 +80,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public int createProductPrice(Product product,Price price) {
+    public Price createProductPrice(Product product, Price price) {
         ObjectId priceId = new ObjectId();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -97,12 +96,17 @@ public class ProductRepositoryImpl implements ProductRepository {
         if (historyPrices == null) {
             historyPrices = new BasicDBList();
         }
-        historyPrices.add(priceDoc);
-        findedProduct.put("historyPrices", historyPrices);
+        historyPrices.add(new DBRef(db, "prices", priceId));
 
-        db.getCollection("products").findAndModify(new BasicDBObject("_id", product.getId()), findedProduct);
+        if (price.getEffectDate().compareTo(product.getCurrentPrice().getEffectDate()) > 0) {
+            historyPrices.add(new DBRef(db, "prices", product.getCurrentPrice().getId()));
+            findedProduct.put("currentPrice", priceDoc);
+        }
+
+        findedProduct.put("historyPrices", historyPrices);
         db.getCollection("prices").insert(priceDoc);
+        db.getCollection("products").findAndModify(new BasicDBObject("_id", product.getId()), findedProduct);
         price.setId(priceId);
-        return 1;
+        return price;
     }
 }

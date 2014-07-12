@@ -47,7 +47,7 @@ public class PricesResource {
         } catch (ParseException e) {
             return Response.status(400).build();
         }
-        int effectCount = productRepository.createProductPrice(product, new Price(amount, effectDate));
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(effectCount)).build()).build();
+        Price createdPrice = productRepository.createProductPrice(product, new Price(amount, effectDate));
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(createdPrice.getId())).build()).build();
     }
 }
