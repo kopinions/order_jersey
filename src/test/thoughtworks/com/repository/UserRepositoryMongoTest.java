@@ -32,8 +32,8 @@ public class UserRepositoryMongoTest {
 
     @Test
     public void should_create_order_for_user() {
-        Product apple = new ProductBuilder().name("apple").description("red apple").build();
-        productRepository.createProduct(apple, new Price(1, new Date()));
+        Product apple = new ProductBuilder().name("apple").description("red apple").currentPrice(new Price(100, new Date())).build();
+        productRepository.createProduct(apple);
         User kayla = userRepository.createUser(new UserBuilder().name("kayla").build());
         Order order = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
         Order orderOfKayla = userRepository.getUserOrderById(kayla, order.getId());
@@ -45,8 +45,8 @@ public class UserRepositoryMongoTest {
 
     @Test
     public void should_create_payment_for_order(){
-        Product apple = new ProductBuilder().name("apple").description("red apple").build();
-        productRepository.createProduct(apple, new Price(1, new Date()));
+        Product apple = new ProductBuilder().name("apple").description("red apple").currentPrice(new Price(100, new Date())).build();
+        productRepository.createProduct(apple);
         User kayla = userRepository.createUser(new UserBuilder().name("kayla").build());
         Order orderOfKayla = userRepository.createOrderForUser(kayla, new Order("beijing", "sofia", "13000000000", asList(new OrderItem(apple.getId(), 2))));
         userRepository.createPaymentForUserOrder(orderOfKayla, new Payment("CASH", 100));

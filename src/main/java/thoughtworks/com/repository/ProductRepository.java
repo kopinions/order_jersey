@@ -7,7 +7,7 @@ import thoughtworks.com.domain.Product;
 public interface ProductRepository {
     Product getProductById(ObjectId productId);
 
-    int createProduct(Product product, Price price);
+    Product createProduct(Product product);
 
     Price getProductPriceById(Product product, ObjectId priceId);
 

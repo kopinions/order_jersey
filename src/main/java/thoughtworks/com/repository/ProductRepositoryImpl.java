@@ -40,7 +40,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public int createProduct(Product product, Price price) {
+    public Product createProduct(Product product) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -49,8 +49,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         DBObject priceDoc = new BasicDBObjectBuilder()
                 .add("_id", priceId)
-                .add("amount", price.getAmount())
-                .add("effectDate", dateFormat.format(price.getEffectDate())).get();
+                .add("amount", product.getCurrentPrice().getAmount())
+                .add("effectDate", dateFormat.format(product.getCurrentPrice().getEffectDate())).get();
 
         DBObject productDoc = new BasicDBObjectBuilder()
                 .add("_id", productId)
@@ -58,13 +58,12 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .add("description", product.getDescription())
                 .add("currentPrice", priceDoc)
                 .get();
+
         product.setId(productId);
-        try {
-            db.getCollection("products").insert(productDoc);
-        } catch (MongoException e) {
-            return 0;
-        }
-        return 1;
+
+        db.getCollection("products").insert(productDoc);
+
+        return product;
     }
 
     @Override

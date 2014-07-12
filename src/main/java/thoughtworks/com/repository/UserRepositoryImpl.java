@@ -14,7 +14,6 @@ public class UserRepositoryImpl implements UserRepository {
     private DB db;
 
     public UserRepositoryImpl(DB test) {
-
         db = test;
     }
 

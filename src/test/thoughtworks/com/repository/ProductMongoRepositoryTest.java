@@ -29,10 +29,10 @@ public class ProductMongoRepositoryTest {
 
     @Test
     public void should_create_and_get_product() throws UnknownHostException {
-        Product apple = new ProductBuilder().name("apple").description("red apple").build();
-        Price price = new Price(100, new Date());
+        Product apple = new ProductBuilder().name("apple").description("red apple")
+                .currentPrice(new Price(100, new Date())).build();
 
-        productRepository.createProduct(apple, price);
+        productRepository.createProduct(apple);
         Product product = productRepository.getProductById(apple.getId());
         assertThat(product, is(notNullValue()));
         assertThat(product.getName(), is("apple"));
@@ -41,8 +41,8 @@ public class ProductMongoRepositoryTest {
 
     @Test
     public void should_create_and_get_price_for_proruct() {
-        Product apple = new ProductBuilder().name("apple").description("red apple").build();
-        productRepository.createProduct(apple, new Price(100, new Date()));
+        Product apple = new ProductBuilder().name("apple").description("red apple").currentPrice(new Price(100, new Date())).build();
+        productRepository.createProduct(apple);
         Price price = new Price(200, new Date());
         productRepository.createProductPrice(apple, price);
         Price priceGot = productRepository.getProductPriceById(apple, price.getId());

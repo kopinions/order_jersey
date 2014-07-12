@@ -49,8 +49,8 @@ public class ProductResource {
             return Response.status(400).build();
         }
 
-        int productId = productRepository.createProduct(new ProductBuilder().name(productName).description(description).build(), new Price(amount, effectDate));
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
+        Product product = productRepository.createProduct(new ProductBuilder().name(productName).description(description).currentPrice(new Price(amount, effectDate)).build());
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(product.getId())).build()).build();
     }
 
     @Path("{productId}/prices")
