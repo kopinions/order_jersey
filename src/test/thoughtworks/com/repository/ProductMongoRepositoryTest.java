@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
+import thoughtworks.com.domain.ProductBuilder;
 
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class ProductMongoRepositoryTest {
 
     @Test
     public void should_create_and_get_product() throws UnknownHostException {
-        Product apple = new Product("apple", "red apple");
+        Product apple = new ProductBuilder().name("apple").description("red apple").build();
         Price price = new Price(100, new Date());
 
         productRepository.createProduct(apple, price);
@@ -40,7 +41,7 @@ public class ProductMongoRepositoryTest {
 
     @Test
     public void should_create_and_get_price_for_proruct() {
-        Product apple = new Product("apple", "red apple");
+        Product apple = new ProductBuilder().name("apple").description("red apple").build();
         productRepository.createProduct(apple, new Price(100, new Date()));
         Price price = new Price(200, new Date());
         productRepository.createProductPrice(apple, price);

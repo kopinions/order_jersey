@@ -3,23 +3,12 @@ package thoughtworks.com.domain;
 import org.bson.types.ObjectId;
 
 public class Product {
-    private ObjectId id;
-    private String description;
-    private String name;
-    private Price currentPrice;
+    ObjectId id;
+    String description;
+    String name;
+    Price currentPrice;
 
     public Product() {
-    }
-    
-    public Product(ObjectId id, String productName, String description) {
-        this.setId(id);
-        this.description = description;
-        this.name = productName;
-    }
-
-    public Product(String productName, String description) {
-        name = productName;
-        this.description = description;
     }
 
     public Product(ObjectId id, String name, String description, Price currentPrice) {

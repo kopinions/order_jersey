@@ -4,6 +4,7 @@ import com.mongodb.*;
 import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
+import thoughtworks.com.domain.ProductBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,22 +32,27 @@ public class ProductRepositoryImpl implements ProductRepository {
 
             return null;
         }
-        return new Product(new ObjectId(productDoc.get("_id").toString()), productDoc.get("name").toString(), productDoc.get("description").toString(), currentPrice);
+        return new ProductBuilder()
+                .id(new ObjectId(productDoc.get("_id").toString()))
+                .name(productDoc.get("name").toString())
+                .description(productDoc.get("description").toString())
+                .currentPrice(currentPrice).build();
     }
 
     @Override
     public int createProduct(Product product, Price price) {
-        BasicDBObjectBuilder builder = new BasicDBObjectBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formattedDate = dateFormat.format(price.getEffectDate());
+
         ObjectId productId = new ObjectId();
         ObjectId priceId = new ObjectId();
+
         DBObject priceDoc = new BasicDBObjectBuilder()
                 .add("_id", priceId)
                 .add("amount", price.getAmount())
-                .add("effectDate", formattedDate).get();
-        DBObject productDoc = builder
+                .add("effectDate", dateFormat.format(price.getEffectDate())).get();
+
+        DBObject productDoc = new BasicDBObjectBuilder()
                 .add("_id", productId)
                 .add("name", product.getName())
                 .add("description", product.getDescription())

@@ -3,6 +3,7 @@ package thoughtworks.com.resource;
 import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Price;
 import thoughtworks.com.domain.Product;
+import thoughtworks.com.domain.ProductBuilder;
 import thoughtworks.com.json.ProductJson;
 import thoughtworks.com.repository.ProductRepository;
 
@@ -48,7 +49,7 @@ public class ProductResource {
             return Response.status(400).build();
         }
 
-        int productId = productRepository.createProduct(new Product(productName, description), new Price(amount, effectDate));
+        int productId = productRepository.createProduct(new ProductBuilder().name(productName).description(description).build(), new Price(amount, effectDate));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build()).build();
     }
 
