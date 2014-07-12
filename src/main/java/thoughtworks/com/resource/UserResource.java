@@ -1,5 +1,6 @@
 package thoughtworks.com.resource;
 
+import org.bson.types.ObjectId;
 import thoughtworks.com.domain.User;
 import thoughtworks.com.repository.UserRepository;
 
@@ -13,8 +14,8 @@ public class UserResource {
     UserRepository userRepository;
 
     @Path("{userId}/orders")
-    public OrderResource getOrders(@PathParam("userId") int userId) {
-        User user = userRepository.getUserById(userId);
+    public OrderResource getOrders(@PathParam("userId") String userId) {
+        User user = userRepository.getUserById(new ObjectId(userId));
         return new OrderResource(user, userRepository);
     }
 

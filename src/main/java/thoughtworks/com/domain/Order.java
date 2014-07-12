@@ -1,9 +1,11 @@
 package thoughtworks.com.domain;
 
+import org.bson.types.ObjectId;
+
 import java.util.List;
 
 public class Order {
-    private int id;
+    private ObjectId id;
     private String address;
     private String name;
     private String phone;
@@ -19,7 +21,7 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public Order(int id, String address, String name, String phone, List<OrderItem> orderItems) {
+    public Order(ObjectId id, String address, String name, String phone, List<OrderItem> orderItems) {
 
         this.id = id;
         this.address = address;
@@ -44,7 +46,11 @@ public class Order {
         return orderItems;
     }
 
-    public int getId() {
+    public ObjectId getId() {
         return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }

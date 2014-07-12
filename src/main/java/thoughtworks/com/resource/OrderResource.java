@@ -1,5 +1,6 @@
 package thoughtworks.com.resource;
 
+import org.bson.types.ObjectId;
 import thoughtworks.com.domain.Order;
 import thoughtworks.com.domain.OrderItem;
 import thoughtworks.com.domain.User;
@@ -28,8 +29,8 @@ public class OrderResource {
     @GET
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public OrderJson getOrder(@PathParam("orderId") int orderId, @Context UriInfo uriInfo) {
-        Order order = userRepository.getUserOrderById(user, orderId);
+    public OrderJson getOrder(@PathParam("orderId") String orderId, @Context UriInfo uriInfo) {
+        Order order = userRepository.getUserOrderById(user, new ObjectId(orderId));
         return new OrderJson(order, uriInfo);
     }
 
@@ -44,13 +45,13 @@ public class OrderResource {
             Map map = (Map) item;
             return new OrderItem(Integer.valueOf(map.get("productId").toString()), Integer.valueOf(map.get("quantity").toString()));
         }).collect(toList());
-        int orderId = userRepository.createOrderForUser(user, new Order(address, name, phone, orderItemsCreated));
+        Order orderId = userRepository.createOrderForUser(user, new Order(address, name, phone, orderItemsCreated));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderId)).build()).build();
     }
 
     @Path("{orderId}/payment")
-    public PaymentResource payment(@PathParam("orderId") int orderId) {
-        Order order = userRepository.getUserOrderById(user, orderId);
+    public PaymentResource payment(@PathParam("orderId") String orderId) {
+        Order order = userRepository.getUserOrderById(user, new ObjectId(orderId));
         return new PaymentResource(user, order, userRepository);
     }
 }

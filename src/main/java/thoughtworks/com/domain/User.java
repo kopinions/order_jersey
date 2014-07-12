@@ -1,10 +1,12 @@
 package thoughtworks.com.domain;
 
+import org.bson.types.ObjectId;
+
 public class User {
-    private int id;
+    private ObjectId id;
     private String name;
 
-    public User(int id, String name) {
+    public User(ObjectId id, String name) {
 
         this.id = id;
         this.name = name;
@@ -22,7 +24,11 @@ public class User {
         return name;
     }
 
-    public int getId() {
+    public org.bson.types.ObjectId getId() {
         return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }

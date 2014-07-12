@@ -50,7 +50,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Price getProductPriceById(Product product,  ObjectId priceId) {
         DBObject findPrice = db.getCollection("prices").findOne(new BasicDBObject("productId", product.getId()).append("_id", priceId));
-        System.out.println(findPrice.get("effectDate"));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date effectDate = null;
