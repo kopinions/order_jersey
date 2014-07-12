@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 
@@ -32,7 +33,9 @@ public class ProductMongoRepositoryTest {
 
         productRepository.createProduct(apple, price);
         Product product = productRepository.getProductById(apple.getId());
+        assertThat(product, is(notNullValue()));
         assertThat(product.getName(), is("apple"));
+        assertThat(product.getCurrentPrice().getAmount(), is(100.0));
     }
 
     @Test

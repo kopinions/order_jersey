@@ -8,6 +8,7 @@ import thoughtworks.com.domain.Product;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class ProductRepositoryImpl implements ProductRepository {
@@ -20,18 +21,31 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product getProductById(ObjectId productId) {
         DBObject productDoc = db.getCollection("products").findOne(new BasicDBObject("_id", productId));
-        return new Product(new ObjectId(productDoc.get("_id").toString()), productDoc.get("name").toString(), productDoc.get("description").toString());
+        Map currentPriceDoc = (Map) productDoc.get("currentPrice");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:MM:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Price currentPrice;
+        try {
+            currentPrice = new Price(Double.valueOf(currentPriceDoc.get("amount").toString()), dateFormat.parse(currentPriceDoc.get("effectDate").toString()));
+        } catch (ParseException e) {
+
+            return null;
+        }
+        return new Product(new ObjectId(productDoc.get("_id").toString()), productDoc.get("name").toString(), productDoc.get("description").toString(), currentPrice);
     }
 
     @Override
     public int createProduct(Product product, Price price) {
         BasicDBObjectBuilder builder = new BasicDBObjectBuilder();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedDate = dateFormat.format(price.getEffectDate());
         ObjectId productId = new ObjectId();
         ObjectId priceId = new ObjectId();
         DBObject priceDoc = new BasicDBObjectBuilder()
                 .add("_id", priceId)
                 .add("amount", price.getAmount())
-                .add("effectDate", price.getEffectDate()).get();
+                .add("effectDate", formattedDate).get();
         DBObject productDoc = builder
                 .add("_id", productId)
                 .add("name", product.getName())
@@ -50,7 +64,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Price getProductPriceById(Product product,  ObjectId priceId) {
         DBObject findPrice = db.getCollection("prices").findOne(new BasicDBObject("productId", product.getId()).append("_id", priceId));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date effectDate = null;
         try {
@@ -64,14 +78,15 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public int createProductPrice(Product product,Price price) {
         ObjectId priceId = new ObjectId();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String formatedDateString = dateFormat.format(price.getEffectDate());
         DBObject priceDoc = new BasicDBObjectBuilder()
                 .add("productId", product.getId())
                 .add("_id", priceId)
                 .add("amount", price.getAmount())
-                .add("effectDate", formatedDateString).get();
+                .add("effectDate", formatedDateString)
+                .get();
         DBObject findedProduct = db.getCollection("products").findOne(new BasicDBObject("_id", product.getId()));
         BasicDBList historyPrices = (BasicDBList) findedProduct.get("historyPrices");
         if (historyPrices == null) {
